@@ -14,6 +14,7 @@ public class GlobalTime : MonoBehaviour
     private static State m_currentState = State.ADVANCING;
 
     public float m_dbgTime = 0.0f;
+    private static float m_rewindSpeed = 3.0f;
 
     private static float m_currentRewindAmountSec = 0.0f;
 
@@ -50,7 +51,8 @@ public class GlobalTime : MonoBehaviour
     {
         bool success=false;
         if (getCurrentCooldown() <= 0.0f &&
-            getCurrentRewindAmountSec() < m_maxRewindTimeSec)
+            getCurrentRewindAmountSec() < m_maxRewindTimeSec &&
+            m_time>0.0f)
         {
             m_currentState = State.REWINDING;
             lockTime();
@@ -117,7 +119,7 @@ public class GlobalTime : MonoBehaviour
     public static float retardTime() // ahahahahahah. tired
     {
         float oldTime = m_time;
-        m_time -= Time.deltaTime;
+        m_time -= m_rewindSpeed*Time.deltaTime;
         if (m_time < 0.0f)
         {
             m_time = 0.0f;
