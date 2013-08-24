@@ -66,6 +66,18 @@ public class GlobalTime : MonoBehaviour
         return success;
     }
 
+    public static float getCurrentSpeedup()
+    {
+        if (m_currentState == State.REWINDING)
+        {
+            return m_rewindSpeed;
+        }
+        else
+        {
+            return 1.0f;
+        }
+    }
+
     private static void setRealtimeState()
     {
         if (m_currentState == State.REWINDING)
