@@ -26,33 +26,45 @@ public class ExistenceBuffer : MonoBehaviour
         NOT_SPAWNED         // At point before data was written
     }
 
-    private List<TimeState> m_buffer;
-    private TimeState m_oldState;
+    List<TimeState> m_buffer;
+    //TimeState m_oldState;
 
     // markers
-    private float m_startTime;
-    private float m_endTime;
-    private float m_currentDeltaTime;
-    private float m_oldTime;
+    float m_startTime;
+    float m_endTime;
+    float m_currentDeltaTime;
+    float m_oldTime;
     // step size
     private static float m_stepSizeSec=0.02f;
     private static float m_maxBufferSizeSec = 10.0f; // 10 seconds
     private int m_maxBufferLength = 0;
     // mode
-    private TimeScaleState m_timeScaleState=TimeScaleState.WRITING_BUFFER;
+    TimeScaleState m_timeScaleState=TimeScaleState.WRITING_BUFFER;
+    private bool m_cloned = false;
 
-
-
+    public void cloneData(ExistenceBuffer p_other)
+    {
+        m_cloned = true;
+        m_startTime = p_other.m_startTime;
+        m_endTime = GlobalTime.getTime();
+        m_buffer = new List<TimeState>(p_other.m_buffer.ToArray());
+        float rest=0.0f;
+        int newLast=System.Math.Max(0,getBufferPosFromTime(m_endTime, out rest));
+        m_buffer.RemoveRange(newLast, m_buffer.Count - newLast);
+        m_currentDeltaTime = p_other.m_currentDeltaTime;
+    }
 
 	// Use this for initialization
 	void Start () 
     {
         m_maxBufferLength = (int)(m_maxBufferSizeSec / m_stepSizeSec)+1; // buffer size for all timestates, with padding
-        Debug.Log(m_maxBufferLength);
-        m_startTime = GlobalTime.getTime();
-        m_endTime = m_startTime - 1.0f;
-        m_buffer = new List<TimeState>(m_maxBufferLength);
-        //m_buffer = new List<TimeState>
+        if (!m_cloned)
+        {
+            Debug.Log(m_maxBufferLength);
+            m_startTime = GlobalTime.getTime();
+            m_endTime = m_startTime - 1.0f;
+            m_buffer = new List<TimeState>(m_maxBufferLength);
+        }
 	}
 	
 	// Update is called once per frame
@@ -98,7 +110,7 @@ public class ExistenceBuffer : MonoBehaviour
                 m_buffer.Add(newState);
                 m_endTime = currentTime;
             }
-            else
+            else if (currentPos>=0)
             {
                 m_buffer[currentPos] = newState;
             }

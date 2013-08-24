@@ -12,9 +12,19 @@ public class PlayerController : MonoBehaviour
     private bool m_onGround;
     private bool m_jumpButtonReleased=true;
 	// Use this for initialization
+    void Awake()
+    {
+        ExistenceBuffer buffer = transform.GetComponent<ExistenceBuffer>();
+        if (buffer == null)
+        {
+            gameObject.AddComponent<ExistenceBuffer>();
+        }
+    }
+
+
 	void Start () 
     {
-	
+        StaticPlayerHandle.m_player = transform;
 	}
 	
 	// Update is called once per frame

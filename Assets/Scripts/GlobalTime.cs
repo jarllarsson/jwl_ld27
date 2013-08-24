@@ -19,6 +19,7 @@ public class GlobalTime : MonoBehaviour
     private static float m_currentRewindAmountSec = 0.0f;
 
     public bool m_dbgRewind = false;
+    public static bool m_doRewind = false;
     public static float m_maxRewindTimeSec = 10.0f;
     public static float m_rewindCooldownTimeSec = 0.0f;
 
@@ -33,7 +34,7 @@ public class GlobalTime : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        if (m_dbgRewind)
+        if (m_dbgRewind || m_doRewind)
         {
             performRewind();
         }
@@ -46,6 +47,8 @@ public class GlobalTime : MonoBehaviour
         if (!m_locked) advanceTime();
         m_dbgTime = m_time;
 	}
+
+
 
     private static bool performRewind()
     {
@@ -78,7 +81,7 @@ public class GlobalTime : MonoBehaviour
         }
     }
 
-    private static void setRealtimeState()
+    public static void setRealtimeState()
     {
         if (m_currentState == State.REWINDING)
         {
