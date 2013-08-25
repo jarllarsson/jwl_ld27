@@ -156,6 +156,9 @@ MonoBehaviour:
   m_ghostMaterial: {fileID: 2100000, guid: 99d424cb21543e7419ed0cc1c43829fe, type: 2}
   m_buffer: {fileID: 11400000}
   m_playerPrefab: {fileID: 400002}
+  m_timetravelAvailableEffectPrefab: {fileID: 400002, guid: d24b46ee26202634badac0b02f8854f7,
+    type: 2}
+  m_timetravelAvailableEffect: {fileID: 0}
 --- !u!135 &13500000
 SphereCollider:
   m_ObjectHideFlags: 1

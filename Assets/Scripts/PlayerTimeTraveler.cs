@@ -12,7 +12,7 @@ public class PlayerTimeTraveler : MonoBehaviour
     public ExistenceBuffer m_buffer;
     public Transform m_playerPrefab;
     private GlobalTime.State m_oldState;
-    private float m_cooldown = 2.0f;
+    private float m_cooldown = 1.0f;
     private static int m_ghostCreatedCounter = 0;
     private static float m_maxGhostDepthOffset = 350;
     private static float m_ghostDepthOffsetStep = 4.0f;
@@ -35,12 +35,12 @@ public class PlayerTimeTraveler : MonoBehaviour
     {
         if (m_cooldown <= 0.0f)
         {
-            if (m_justCreated)
+            if (m_justCreated && GlobalTime.getCurrentCooldown() <= 0.0f)
             {
-
+                m_justCreated = false;
+                showTimeTravelAbility();
             }
-
-            m_justCreated = false;
+       
 
             // new input
             float rewindButton = Input.GetAxis("Fire1");
@@ -81,6 +81,12 @@ public class PlayerTimeTraveler : MonoBehaviour
                 m_oldState = GlobalTime.State.ADVANCING;
                 m_ghostCreatedCounter++;
 
+                // Timetravel effect
+                if (m_timetravelAvailableEffect != null)
+                {
+                    DestroyImmediate(m_timetravelAvailableEffect.gameObject);
+                }
+
                 // Set up clone
                 Transform newPlayer = Instantiate(m_playerPrefab, transform.position, transform.rotation) as Transform;
                 newPlayer.name = "Player" + m_ghostCreatedCounter;
@@ -91,11 +97,7 @@ public class PlayerTimeTraveler : MonoBehaviour
                 TimeBasedDisabler disabler = gameObject.AddComponent<TimeBasedDisabler>() as TimeBasedDisabler;
                 disabler.m_time = m_buffer.getEndTime();
                 transform.position -= Vector3.forward * (1.0f+((m_ghostDepthOffsetStep *(float) m_ghostCreatedCounter)%m_maxGhostDepthOffset));
-                // Timetravel effect
-                if (m_timetravelAvailableEffect != null)
-                {
-                    Destroy(m_timetravelAvailableEffect);
-                }
+
 
                 //clonedBuf.cloneData(m_buffer);
                 // destroy scripts on clone
