@@ -102,7 +102,7 @@ public class PlayerTimeTraveler : MonoBehaviour
 
                 //clonedBuf.cloneData(m_buffer);
                 // destroy scripts on clone
-                Debug.Log("HEJ");
+                // Debug.Log("HEJ");
                 foreach (MonoBehaviour script in m_scriptsToDisableOnClone)
                 {
                     Destroy(script);

@@ -10,12 +10,20 @@ public class ExistenceBuffer : MonoBehaviour
             Quaternion p_rotation, Vector3 p_scale)
         {
             m_position = new Vector2(p_position.x,p_position.y);
-            m_rotation = p_rotation;
+            m_rotation = new Vector4(p_rotation.x,p_rotation.y,p_rotation.z,p_rotation.w);
+            m_scale = p_scale;
+        }
+
+        public TimeState(Vector3 p_position,
+                         Vector2 p_frameData, Vector3 p_scale)
+        {
+            m_position = new Vector2(p_position.x, p_position.y);
+            m_rotation = new Vector4(p_frameData.x, p_frameData.y, 0.0f,0.0f);
             m_scale = p_scale;
         }
 
         public Vector2      m_position;
-        public Quaternion   m_rotation;
+        public Vector4      m_rotation;
         public Vector3      m_scale;
     }
 
@@ -46,6 +54,7 @@ public class ExistenceBuffer : MonoBehaviour
     private Renderer[] m_renderers;
     private bool m_renderersDisabled = false;
     private int m_rendererReenableTick = 0;
+    private FrameData m_frameData;
 
     public void cloneData(ExistenceBuffer p_other)
     {
@@ -65,12 +74,13 @@ public class ExistenceBuffer : MonoBehaviour
         m_maxBufferLength = (int)(m_maxBufferSizeSec / m_stepSizeSec)+1; // buffer size for all timestates, with padding
         if (!m_cloned)
         {
-            Debug.Log(m_maxBufferLength);
+           // Debug.Log(m_maxBufferLength);
             m_startTime = GlobalTime.getTime();
             m_endTime = m_startTime - 1.0f;
             m_buffer = new List<TimeState>(m_maxBufferLength);
         }
         m_renderers = transform.GetComponentsInChildren<Renderer>();
+        m_frameData = transform.GetComponent<FrameData>();
 	}
 	
 	// Update is called once per frame
@@ -94,7 +104,14 @@ public class ExistenceBuffer : MonoBehaviour
                 TimeState currentState = m_buffer[currentPos];
                 // TimeState nextState = m_buffer[currentPos];
                 transform.position = new Vector3(currentState.m_position.x,currentState.m_position.y,transform.position.z);
-                transform.rotation = currentState.m_rotation;
+                if (m_frameData == null)
+                {
+                    transform.rotation = new Quaternion(currentState.m_rotation.x, currentState.m_rotation.y, currentState.m_rotation.z, currentState.m_rotation.w);
+                }
+                else
+                {
+                    m_frameData.m_frameData = new Vector2(currentState.m_rotation.x, currentState.m_rotation.y);
+                }
                 transform.localScale = currentState.m_scale;
             }
             else // outside buffer, resume realtime
@@ -110,7 +127,16 @@ public class ExistenceBuffer : MonoBehaviour
             float t = 0.0f;
             int currentPos = getBufferPosFromTime(currentTime, out t);
             //
-            TimeState newState = new TimeState(transform.position,transform.rotation,transform.localScale);
+            TimeState newState = null;
+            if (m_frameData == null)
+            {
+                newState = new TimeState(transform.position, transform.rotation, transform.localScale);
+            }
+            else
+            {
+                newState = new TimeState(transform.position, m_frameData.m_frameData, transform.localScale);
+            }
+            
             if (currentPos > m_buffer.Count-1)
             {
                 m_buffer.Add(newState);
