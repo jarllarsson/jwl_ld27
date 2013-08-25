@@ -4917,7 +4917,7 @@ GameObject:
   - 64: {fileID: 398732370}
   - 23: {fileID: 398732369}
   m_Layer: 0
-  m_Name: Quad
+  m_Name: Fade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4929,13 +4929,13 @@ Renderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 398732368}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 986e783161859724ca2914095972a3ab, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -4968,10 +4968,10 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 398732368}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -160.2724}
+  m_LocalPosition: {x: -2.12489319, y: 3.70669556, z: -153.913269}
   m_LocalScale: {x: 99.1817627, y: 71.6773987, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1772559154}
 --- !u!1 &434192128
 GameObject:
   m_ObjectHideFlags: 0
@@ -10045,7 +10045,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1073944741}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 17.2629547, z: 1}
+  m_LocalPosition: {x: 0, y: 17.2629547, z: 4.72341919}
   m_LocalScale: {x: 11.8555593, y: 6.28192282, z: 6.28192282}
   m_Children:
   - {fileID: 1317530511}
@@ -14027,6 +14027,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1772559154}
+  - 114: {fileID: 1772559155}
   m_Layer: 0
   m_Name: StartGameObj
   m_TagString: Untagged
@@ -14044,8 +14045,24 @@ Transform:
   m_LocalPosition: {x: 2.12489319, y: -3.70669556, z: -6.35913086}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 398732372}
   - {fileID: 2050730531}
   m_Father: {fileID: 0}
+--- !u!114 &1772559155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1772559153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 062fad0b788c2734c827807fad8d0e5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_fadePlane: {fileID: 398732372}
+  m_infoText: {fileID: 2050730530}
+  m_upperText: {fileID: 177383850}
+  m_lowerText: {fileID: 1022137623}
 --- !u!1 &1777117179
 GameObject:
   m_ObjectHideFlags: 0
@@ -15931,7 +15948,7 @@ GUIText:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2050730529}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Text: .
   m_Anchor: 4
