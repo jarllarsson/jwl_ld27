@@ -8,6 +8,9 @@ public class TimeBasedDisabler : MonoBehaviour
     private Rigidbody[] m_rbodies;
     private Collider[] m_colliders;
     private Renderer[] m_renderers;
+    public bool m_disableRenderers = true;
+    public bool m_disableColliders = true;
+    public bool m_disableRigidbodies = true;
 
     private static Transform m_particleEffect;
     private PopInTimelineEffect m_timelineEffect;
@@ -43,35 +46,57 @@ public class TimeBasedDisabler : MonoBehaviour
                 if (m_timelineEffect) m_timelineEffect.play(transform.position);
             }
             m_disableEngaged = true;
-            foreach (Rigidbody rbody in m_rbodies)
+            if (m_disableRigidbodies)
             {
-                disableRigidBody(rbody);
+                foreach (Rigidbody rbody in m_rbodies)
+                {
+                    disableRigidBody(rbody);
+                }
             }
-            foreach (Collider coll in m_colliders)
+            if (m_disableColliders)
             {
-                coll.enabled = false;
+                foreach (Collider coll in m_colliders)
+                {
+                    coll.enabled = false;
+                }
             }
-            foreach (Renderer renderer in m_renderers)
+            if (m_disableRenderers)
             {
-                renderer.enabled = false;
-            } 
-
+                foreach (Renderer renderer in m_renderers)
+                {
+                    renderer.enabled = false;
+                }
+            }
+            // if way old, delete this
+            if (GlobalTime.getTime() > m_time+GlobalTime.m_maxRewindTimeSec*1.2f)
+            {
+                Destroy(gameObject);
+            }
         }
         else if (m_disableEngaged)
         {
             m_disableEngaged = false;
             // ENABLE
-            foreach (Rigidbody rbody in m_rbodies)
+            if (m_disableRigidbodies)
             {
-                enableRigidBody(rbody);
+                foreach (Rigidbody rbody in m_rbodies)
+                {
+                    enableRigidBody(rbody);
+                }
             }
-            foreach (Collider coll in m_colliders)
+            if (m_disableColliders)
             {
-                coll.enabled = true;
+                foreach (Collider coll in m_colliders)
+                {
+                    coll.enabled = true;
+                }
             }
-            foreach (Renderer renderer in m_renderers)
+            if (m_disableRenderers)
             {
-                renderer.enabled = true;
+                foreach (Renderer renderer in m_renderers)
+                {
+                    renderer.enabled = true;
+                }
             }
             if (m_timelineEffect) m_timelineEffect.play(transform.position);
         }

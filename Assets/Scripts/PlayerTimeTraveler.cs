@@ -14,7 +14,7 @@ public class PlayerTimeTraveler : MonoBehaviour
     private GlobalTime.State m_oldState;
     private float m_cooldown = 0.3f;
     private static int m_ghostCreatedCounter = 0;
-    private static float m_maxGhostDepthOffset = 350;
+    private static float m_maxGhostDepthOffset = 80;
     private static float m_ghostDepthOffsetStep = 4.0f;
     private bool m_justCreated = true;
     public Transform m_timetravelAvailableEffectPrefab;
@@ -43,7 +43,7 @@ public class PlayerTimeTraveler : MonoBehaviour
        
 
             // new input
-            float rewindButton = Input.GetAxis("Fire1");
+            float rewindButton = Input.GetAxis("Fire2");
 
             if (rewindButton > 0.5f && GlobalTime.getCurrentCooldown()<=0.0f)
             {

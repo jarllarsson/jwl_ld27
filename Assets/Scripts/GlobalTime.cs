@@ -22,13 +22,14 @@ public class GlobalTime : MonoBehaviour
     public static bool m_doRewind = false;
     public static float m_maxRewindTimeSec = 10.0f;
     public static float m_rewindCooldownTimeSec = 0.0f;
-
+    public AudioSource m_rewindSound;
+    private static AudioSource m_sRewindSound;
 
 
 	// Use this for initialization
 	void Start () 
     {
-	
+        m_sRewindSound = m_rewindSound;
 	}
 	
 	// Update is called once per frame
@@ -56,7 +57,8 @@ public class GlobalTime : MonoBehaviour
         if (getCurrentCooldown() <= 0.0f &&
             getCurrentRewindAmountSec() < m_maxRewindTimeSec &&
             m_time>0.0f)
-        {
+        {            
+            if (m_sRewindSound && m_currentState!=State.REWINDING) m_sRewindSound.Play();
             m_currentState = State.REWINDING;
             lockTime();
             retardTime();

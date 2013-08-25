@@ -42,6 +42,11 @@ public class ExistenceBuffer : MonoBehaviour
     TimeScaleState m_timeScaleState=TimeScaleState.WRITING_BUFFER;
     private bool m_cloned = false;
 
+    public bool m_hideWhenNotSpawned = false;
+    private Renderer[] m_renderers;
+    private bool m_renderersDisabled = false;
+    private int m_rendererReenableTick = 0;
+
     public void cloneData(ExistenceBuffer p_other)
     {
         m_cloned = true;
@@ -65,6 +70,7 @@ public class ExistenceBuffer : MonoBehaviour
             m_endTime = m_startTime - 1.0f;
             m_buffer = new List<TimeState>(m_maxBufferLength);
         }
+        m_renderers = transform.GetComponentsInChildren<Renderer>();
 	}
 	
 	// Update is called once per frame
@@ -122,8 +128,40 @@ public class ExistenceBuffer : MonoBehaviour
             }
         }
 
+        if (m_hideWhenNotSpawned) hideWhenNotExisting();
+
         m_oldTime = currentTime;
 	}
+
+    void hideWhenNotExisting()
+    {
+        if (isBeforeBuffer())
+        {
+            // Hide when not spawned
+            if (!m_renderersDisabled)
+            {
+                foreach (Renderer r in m_renderers)
+                {
+                    r.enabled = false;
+                }
+                m_renderersDisabled = true;
+                m_rendererReenableTick = 2;
+            }
+        }
+        else if (m_renderersDisabled)
+        {
+            // Show when spawned and was hidden
+            if (m_rendererReenableTick <= 0)
+            {
+                foreach (Renderer r in m_renderers)
+                {
+                    r.enabled = true;
+                }
+                m_renderersDisabled = false;
+            }
+            m_rendererReenableTick--;
+        }
+    }
 
     void setTimescaleStateBasedOnTime(float p_currentTime)
     {
@@ -155,6 +193,11 @@ public class ExistenceBuffer : MonoBehaviour
     public float getEndTime()
     {
         return m_endTime;
+    }
+
+    public float getStartTime()
+    {
+        return m_startTime;
     }
 
     int getDeltaSign()
