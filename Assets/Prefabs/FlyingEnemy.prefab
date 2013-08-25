@@ -132,7 +132,7 @@ MonoBehaviour:
   m_moveSpeed: 100
   m_airMoveSpeed: 30
   m_maxMovespeed: 300
-  m_dmgToArtifact: .100000001
+  m_dmgToArtifact: .0500000007
   m_frameData: {fileID: 11400004}
   m_animSpd: 10
 --- !u!114 &11400004

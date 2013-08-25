@@ -42,7 +42,7 @@ public class Artifact : MonoBehaviour
         float delta = 0.5f*(GlobalTime.getTime() - m_oldTime);
         if (delta < 0.0f)
         {
-            delta *= 1.5f;
+            delta *= 3.0f;
             if (!m_moveParticles.isPlaying) m_moveParticles.Play();
         }
         else
