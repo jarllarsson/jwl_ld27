@@ -12,7 +12,13 @@ public class PlayerTimeTraveler : MonoBehaviour
     public ExistenceBuffer m_buffer;
     public Transform m_playerPrefab;
     private GlobalTime.State m_oldState;
-    private float m_cooldown = 1.0f;
+    private float m_cooldown = 2.0f;
+    private static int m_ghostCreatedCounter = 0;
+    private static float m_maxGhostDepthOffset = 350;
+    private static float m_ghostDepthOffsetStep = 4.0f;
+    private bool m_justCreated = true;
+    public Transform m_timetravelAvailableEffectPrefab;
+    public Transform m_timetravelAvailableEffect;
 
 	// Use this for initialization
 	void Start () 
@@ -29,6 +35,12 @@ public class PlayerTimeTraveler : MonoBehaviour
     {
         if (m_cooldown <= 0.0f)
         {
+            if (m_justCreated)
+            {
+
+            }
+
+            m_justCreated = false;
 
             // new input
             float rewindButton = Input.GetAxis("Fire1");
@@ -67,11 +79,24 @@ public class PlayerTimeTraveler : MonoBehaviour
                 GlobalTime.m_doRewind = false;
                 GlobalTime.setRealtimeState();
                 m_oldState = GlobalTime.State.ADVANCING;
-                Transform newPlayer = Instantiate(m_playerPrefab, transform.position+Vector3.up*5.0f, transform.rotation) as Transform;
-                ExistenceBuffer clonedBuf = newPlayer.gameObject.AddComponent<ExistenceBuffer>() as ExistenceBuffer;
+                m_ghostCreatedCounter++;
+
+                // Set up clone
+                Transform newPlayer = Instantiate(m_playerPrefab, transform.position, transform.rotation) as Transform;
+                newPlayer.name = "Player" + m_ghostCreatedCounter;
+
                 // Set this player as a ghost
                 Renderer playerRenderer = transform.GetComponentInChildren<Renderer>();
                 if (playerRenderer) playerRenderer.material = m_ghostMaterial;
+                TimeBasedDisabler disabler = gameObject.AddComponent<TimeBasedDisabler>() as TimeBasedDisabler;
+                disabler.m_time = m_buffer.getEndTime();
+                transform.position -= Vector3.forward * (1.0f+((m_ghostDepthOffsetStep *(float) m_ghostCreatedCounter)%m_maxGhostDepthOffset));
+                // Timetravel effect
+                if (m_timetravelAvailableEffect != null)
+                {
+                    Destroy(m_timetravelAvailableEffect);
+                }
+
                 //clonedBuf.cloneData(m_buffer);
                 // destroy scripts on clone
                 Debug.Log("HEJ");
@@ -88,4 +113,11 @@ public class PlayerTimeTraveler : MonoBehaviour
 
         m_oldState = GlobalTime.getState();
 	}
+
+
+    void showTimeTravelAbility()
+    {
+        m_timetravelAvailableEffect = Instantiate(m_timetravelAvailableEffectPrefab, transform.position, transform.rotation) as Transform;
+        m_timetravelAvailableEffect.parent = transform;
+    }
 }

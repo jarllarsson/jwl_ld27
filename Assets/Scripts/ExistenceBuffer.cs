@@ -9,12 +9,12 @@ public class ExistenceBuffer : MonoBehaviour
         public TimeState(Vector3 p_position,
             Quaternion p_rotation, Vector3 p_scale)
         {
-            m_position = p_position;
+            m_position = new Vector2(p_position.x,p_position.y);
             m_rotation = p_rotation;
             m_scale = p_scale;
         }
 
-        public Vector3      m_position;
+        public Vector2      m_position;
         public Quaternion   m_rotation;
         public Vector3      m_scale;
     }
@@ -87,7 +87,7 @@ public class ExistenceBuffer : MonoBehaviour
             {
                 TimeState currentState = m_buffer[currentPos];
                 // TimeState nextState = m_buffer[currentPos];
-                transform.position = currentState.m_position;
+                transform.position = new Vector3(currentState.m_position.x,currentState.m_position.y,transform.position.z);
                 transform.rotation = currentState.m_rotation;
                 transform.localScale = currentState.m_scale;
             }
@@ -150,6 +150,11 @@ public class ExistenceBuffer : MonoBehaviour
         {
             m_timeScaleState = TimeScaleState.NOT_SPAWNED;
         }
+    }
+
+    public float getEndTime()
+    {
+        return m_endTime;
     }
 
     int getDeltaSign()
