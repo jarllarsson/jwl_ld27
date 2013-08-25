@@ -7,7 +7,9 @@ public class TimeStateVisualizer : MonoBehaviour {
     private float m_cooldownBarOrigSize = 1.0f;
     public Transform m_playIcon;
     public Transform m_rewindIcon;
+    public Artifact m_artifactScript;
     public GUIText m_timer;
+    public GUIText m_health;
 
 	// Use this for initialization
 	void Start () 
@@ -22,6 +24,8 @@ public class TimeStateVisualizer : MonoBehaviour {
             m_timer.text = GlobalTime.getTime().ToString("F2");
         else
             m_timer.text = GlobalTime.getTime().ToString("F2") + " (<color=#f13975>r" + Mathf.Round(GlobalTime.getCurrentRewindAmountSec()) + "</color>)";
+
+        m_health.text = "Structural Integrity: " + (int)(m_artifactScript.m_health) + "%";
 
         //
         GlobalTime.State currentState = GlobalTime.getState();

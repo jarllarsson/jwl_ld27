@@ -2200,7 +2200,7 @@ ParticleSystemRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: b4a0ffa5fb3b20846bf823e8e1fca1fc, type: 2}
+  - {fileID: 2100000, guid: fe9cce6dffd36244d8729c9842d2cda3, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0

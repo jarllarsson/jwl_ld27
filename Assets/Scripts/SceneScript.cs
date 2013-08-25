@@ -7,6 +7,7 @@ public class SceneScript : MonoBehaviour {
 	void Start () 
     {
         Screen.showCursor = false;
+        Random.seed = (int)(Time.realtimeSinceStartup*10000);
 	}
 	
 	// Update is called once per frame
