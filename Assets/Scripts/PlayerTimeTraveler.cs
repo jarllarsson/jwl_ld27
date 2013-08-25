@@ -12,7 +12,7 @@ public class PlayerTimeTraveler : MonoBehaviour
     public ExistenceBuffer m_buffer;
     public Transform m_playerPrefab;
     private GlobalTime.State m_oldState;
-    private float m_cooldown = 1.0f;
+    private float m_cooldown = 0.3f;
     private static int m_ghostCreatedCounter = 0;
     private static float m_maxGhostDepthOffset = 350;
     private static float m_ghostDepthOffsetStep = 4.0f;
@@ -95,6 +95,7 @@ public class PlayerTimeTraveler : MonoBehaviour
                 Renderer playerRenderer = transform.GetComponentInChildren<Renderer>();
                 if (playerRenderer) playerRenderer.material = m_ghostMaterial;
                 TimeBasedDisabler disabler = gameObject.AddComponent<TimeBasedDisabler>() as TimeBasedDisabler;
+                disabler.m_popEffect = true;
                 disabler.m_time = m_buffer.getEndTime();
                 transform.position -= Vector3.forward * (1.0f+((m_ghostDepthOffsetStep *(float) m_ghostCreatedCounter)%m_maxGhostDepthOffset));
 

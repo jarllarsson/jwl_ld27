@@ -8,12 +8,28 @@ public class TimeBasedDisabler : MonoBehaviour
     private Rigidbody[] m_rbodies;
     private Collider[] m_colliders;
     private Renderer[] m_renderers;
+
+    private static Transform m_particleEffect;
+    private PopInTimelineEffect m_timelineEffect;
+    public bool m_popEffect = false;
+
 	// Use this for initialization
 	void Start () 
     {
         m_rbodies = GetComponentsInChildren<Rigidbody>();
         m_colliders = GetComponentsInChildren<Collider>();
         m_renderers = GetComponentsInChildren<Renderer>();
+        if (m_popEffect)
+        {
+            if (m_particleEffect == null)
+            {
+                m_particleEffect = GameObject.Find("PopOutOfTimeline").transform;
+            }
+            Transform particleeffect = Instantiate(m_particleEffect, transform.position, transform.rotation) as Transform;
+            m_timelineEffect = particleeffect.gameObject.AddComponent<PopInTimelineEffect>();
+            particleeffect.name = "popeffect-" + gameObject.name;
+            //particleeffect.parent = transform;
+        }
 	}
 	
 	// Update is called once per frame
@@ -22,6 +38,10 @@ public class TimeBasedDisabler : MonoBehaviour
         if (GlobalTime.getTime() > m_time)
         {
             // DISABLE
+            if (!m_disableEngaged)
+            {
+                if (m_timelineEffect) m_timelineEffect.play(transform.position);
+            }
             m_disableEngaged = true;
             foreach (Rigidbody rbody in m_rbodies)
             {
@@ -34,7 +54,8 @@ public class TimeBasedDisabler : MonoBehaviour
             foreach (Renderer renderer in m_renderers)
             {
                 renderer.enabled = false;
-            }
+            } 
+
         }
         else if (m_disableEngaged)
         {
@@ -52,6 +73,7 @@ public class TimeBasedDisabler : MonoBehaviour
             {
                 renderer.enabled = true;
             }
+            if (m_timelineEffect) m_timelineEffect.play(transform.position);
         }
 	}
 
