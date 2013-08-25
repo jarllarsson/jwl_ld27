@@ -18,6 +18,7 @@ public class Artifact : MonoBehaviour
     private float m_defaultYPos;
     private float m_oldTime;
 	// Use this for initialization
+    public AudioSource m_hurtSound;
 	void Start () 
     {
         m_modelContainerDefaultPos = m_modelContainer.localPosition;
@@ -61,11 +62,15 @@ public class Artifact : MonoBehaviour
             m_modelContainer.localPosition += new Vector3(Mathf.Sin(m_hitTick*50.0f)*0.7f,0.0f,0.0f);
             m_model.renderer.material.color = new Color(0.5f+Random.Range(0.0f, 1.0f), 0.5f+Random.Range(0.0f, 1.0f), 0.5f+Random.Range(0.0f, 1.0f));
         }
-        m_health = m_loggedHealthObject.localScale.x*100.0f;
+        // m_health = m_loggedHealthObject.localScale.x*100.0f;
         if (m_health < 99.0f)
         {
             if (!m_hurtParticles.isPlaying) m_hurtParticles.Play();
-            m_hurtParticles.startSize = (100.0f - m_health) * 0.01f * 4.0f;
+            float hitPrcnt = (100.0f - m_health) * 0.01f;
+            float shakeX = Mathf.Sin(GlobalTime.getTime() * (hitPrcnt*50.0f)) * hitPrcnt * Random.Range(-1.0f,1.0f);
+            float shakeY = Mathf.Cos(GlobalTime.getTime() * (hitPrcnt * 50.0f)) * hitPrcnt * Random.Range(-1.0f,1.0f);
+            m_modelContainer.localPosition += new Vector3(shakeX, shakeY, 0.0f);
+            m_hurtParticles.startSize = hitPrcnt * 4.0f;
         }
         else
         {
@@ -73,15 +78,45 @@ public class Artifact : MonoBehaviour
         }
 	}
 
-    public void damage(float p_value)
+    public bool damage(float p_value)
     {
+        bool success = false;
         if (m_hitTick <= 0.0f &&
             m_healthObjBuffer.isWritingToBuffer() &&
             GlobalTime.getState()==GlobalTime.State.ADVANCING)
         {
+            if (m_hurtSound && !m_hurtSound.isPlaying) m_hurtSound.Play();
             m_hitTick = m_hitCooldown;
             m_loggedHealthObject.localScale -= new Vector3(p_value, p_value, p_value);
+            success = true;
         }
+        return success;
+    }
 
+    public bool damage2(float p_value)
+    {
+        bool success = false;
+        if (m_hitTick <= 0.0f)
+        {
+            if (m_hurtSound && !m_hurtSound.isPlaying) m_hurtSound.Play();
+            m_hitTick = m_hitCooldown;
+            m_health -= p_value*100.0f;
+            success = true;
+        }
+        return success;
+    }
+
+    public void reverseDamage(float p_value)
+    {
+        //bool success = false;
+//         if (m_hitTick <= 0.0f &&
+//             m_healthObjBuffer.isWritingToBuffer())
+        //{
+            //if (m_hurtSound && !m_hurtSound.isPlaying) m_hurtSound.Play();
+            //m_hitTick = m_hitCooldown;
+            m_health += p_value * 100.0f;
+            //success = true;
+        //}
+        //return success;
     }
 }

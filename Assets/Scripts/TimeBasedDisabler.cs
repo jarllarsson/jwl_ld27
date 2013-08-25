@@ -12,9 +12,10 @@ public class TimeBasedDisabler : MonoBehaviour
     public bool m_disableColliders = true;
     public bool m_disableRigidbodies = true;
 
-    private static Transform m_particleEffect;
+    private Transform m_particleEffect;
     private PopInTimelineEffect m_timelineEffect;
     public bool m_popEffect = false;
+    public string m_popEffectName = "PopOutOfTimeline";
 
 	// Use this for initialization
 	void Start () 
@@ -26,7 +27,7 @@ public class TimeBasedDisabler : MonoBehaviour
         {
             if (m_particleEffect == null)
             {
-                m_particleEffect = GameObject.Find("PopOutOfTimeline").transform;
+                m_particleEffect = GameObject.Find(m_popEffectName).transform;
             }
             Transform particleeffect = Instantiate(m_particleEffect, transform.position, transform.rotation) as Transform;
             m_timelineEffect = particleeffect.gameObject.AddComponent<PopInTimelineEffect>();

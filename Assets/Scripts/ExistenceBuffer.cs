@@ -49,6 +49,7 @@ public class ExistenceBuffer : MonoBehaviour
     // mode
     TimeScaleState m_timeScaleState=TimeScaleState.WRITING_BUFFER;
     private bool m_cloned = false;
+    public bool m_kinematicWhenReversing = true;
 
     public bool m_hideWhenNotSpawned = false;
     private Renderer[] m_renderers;
@@ -104,6 +105,7 @@ public class ExistenceBuffer : MonoBehaviour
                 TimeState currentState = m_buffer[currentPos];
                 // TimeState nextState = m_buffer[currentPos];
                 transform.position = new Vector3(currentState.m_position.x,currentState.m_position.y,transform.position.z);
+
                 if (m_frameData == null)
                 {
                     transform.rotation = new Quaternion(currentState.m_rotation.x, currentState.m_rotation.y, currentState.m_rotation.z, currentState.m_rotation.w);
@@ -194,7 +196,7 @@ public class ExistenceBuffer : MonoBehaviour
         if (p_currentTime >= m_startTime && p_currentTime < m_endTime)
         {
             m_timeScaleState = TimeScaleState.READING_BUFFER;
-            if (rigidbody)
+            if (rigidbody && m_kinematicWhenReversing)
             {
                 rigidbody.isKinematic = true;
                 //rigidbody.detectCollisions = false;
@@ -203,7 +205,7 @@ public class ExistenceBuffer : MonoBehaviour
         else if (p_currentTime >= m_endTime) // outside buffer, resume realtime
         {
             m_timeScaleState = TimeScaleState.WRITING_BUFFER;
-            if (rigidbody)
+            if (rigidbody && m_kinematicWhenReversing)
             {
                 rigidbody.isKinematic = false;
                 rigidbody.WakeUp();

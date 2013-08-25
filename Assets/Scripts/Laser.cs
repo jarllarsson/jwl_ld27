@@ -61,13 +61,22 @@ public class Laser : MonoBehaviour
     {
         if (other != collider && 
             other.gameObject.tag!="Laser" &&
-            other.gameObject.tag!="Player")
+            other.gameObject.tag!="Player" &&
+            other.gameObject.tag!="Artifact")
         {
             if (m_disabler == null)
             {
                 TimeBasedDisabler disabler = gameObject.AddComponent<TimeBasedDisabler>() as TimeBasedDisabler;
                 disabler.m_time = m_buffer.getEndTime();
                 m_explodedTime = GlobalTime.getTime();
+            }
+            if (other.gameObject.tag != "Enemy")
+            {
+                EnemyController enemy = other.gameObject.GetComponent<EnemyController>();
+                if (enemy)
+                {
+                    enemy.damage(1.0f);
+                }
             }
             explode();
         }
