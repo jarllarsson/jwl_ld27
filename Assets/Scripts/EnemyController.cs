@@ -36,9 +36,14 @@ public class EnemyController : MonoBehaviour
     public FrameData m_frameData;
     public float m_animSpd = 10.0f;
     private float m_frameCalc = 0.0f;
+    private float m_fakePathFind = 1.0f;
+    private float m_coolDownFakePathfind = 0.0f;
+    private float m_flipDirPathfindTick = 0.0f;
 	// Use this for initialization
 	void Start () 
     {
+        m_fakePathFind = Mathf.Clamp((float)Random.Range(-2, 2),-1.0f,1.0f);
+        if (m_fakePathFind == 0.0f) m_fakePathFind = 1.0f;
         if (m_artifact == null)
         {
             GameObject artifact = GameObject.FindGameObjectWithTag("Artifact");
@@ -65,6 +70,26 @@ public class EnemyController : MonoBehaviour
         if (GlobalTime.getState() == GlobalTime.State.ADVANCING && m_artifact)
         {
             Vector3 targetDir = (m_artifact.position - transform.position).normalized;
+
+            if (m_enemyType == Type.WALKING)
+            {
+                //Debug.DrawLine(transform.position + Vector3.up, transform.position + Vector3.up + Vector3.down * 3.0f, Color.red, 1.0f);
+                if (m_coolDownFakePathfind>0.0f ||
+                    Physics.Raycast(new Ray(transform.position + Vector3.up - Vector3.forward * 30.0f, Vector3.down), 3.0f))
+                {
+                    targetDir = new Vector3(m_fakePathFind, targetDir.y, targetDir.z);
+                    //Debug.DrawLine(transform.position + Vector3.up, transform.position + Vector3.up + Vector3.down * 3.0f, Color.green, 1.0f);
+                    m_coolDownFakePathfind = 1.0f;
+                }
+                m_coolDownFakePathfind -= Time.deltaTime;
+                m_flipDirPathfindTick -= Time.deltaTime;
+                if (m_flipDirPathfindTick < -10.0f)
+                {
+                    m_flipDirPathfindTick = Random.Range(1.0f,20.0f);
+                    m_fakePathFind *= -1.0f;
+                }
+            }
+
 
             float spd = m_moveSpeed;
             if (m_onGround)
@@ -253,6 +278,7 @@ public class EnemyController : MonoBehaviour
         if (absVecX > 0.7f)
         {
             m_movedir += p_hitNormalVector.x * m_moveSpeed * 10.0f;
+            m_fakePathFind = p_hitNormalVector.x;
         }
     }
 
