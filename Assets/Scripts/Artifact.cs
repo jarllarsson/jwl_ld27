@@ -19,6 +19,10 @@ public class Artifact : MonoBehaviour
     private float m_oldTime;
 	// Use this for initialization
     public AudioSource m_hurtSound;
+    public Transform m_goal;
+    public GameOverScript m_gameOverObj;
+    public GameOverScript m_winObj;
+    bool m_gameDecided = false;
 	void Start () 
     {
         m_modelContainerDefaultPos = m_modelContainer.localPosition;
@@ -30,52 +34,80 @@ public class Artifact : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        if (m_dbgHit)
+        if (!m_gameDecided && transform.position.y >= m_goal.position.y - 3.0f)
         {
-            damage(0.1f);
-            m_dbgHit = false;
+            m_winObj.Run();
+            m_gameDecided = true;
         }
-        m_modelContainer.localRotation = Quaternion.Euler(new Vector3(m_modelContainer.localRotation.x, 
-            Mathf.Rad2Deg*GlobalTime.getTime()*0.5f, 
-            m_modelContainer.localRotation.z));
 
-        float delta = 0.5f*(GlobalTime.getTime() - m_oldTime);
-        if (delta < 0.0f)
+        if (!m_gameDecided && m_health<=0.0f)
         {
-            delta *= 3.0f;
-            if (!m_moveParticles.isPlaying) m_moveParticles.Play();
+            m_gameOverObj.Run();
+            m_gameDecided = true;
+        }
+
+        if (!m_gameDecided)
+        {
+            if (m_dbgHit)
+            {
+                damage(0.1f);
+                m_dbgHit = false;
+            }
+            m_modelContainer.localRotation = Quaternion.Euler(new Vector3(m_modelContainer.localRotation.x, 
+                Mathf.Rad2Deg*GlobalTime.getTime()*0.5f, 
+                m_modelContainer.localRotation.z));
+
+            float delta = 0.5f*(GlobalTime.getTime() - m_oldTime);
+            if (delta < 0.0f)
+            {
+                delta *= 2.5f;
+                if (!m_moveParticles.isPlaying) m_moveParticles.Play();
+            }
+            else
+            {
+                if (m_moveParticles.isPlaying) m_moveParticles.Stop();
+            }
+            transform.position += new Vector3(0.0f, -delta, 0.0f);
+            if (transform.position.y < m_defaultYPos) 
+                transform.position = new Vector3(transform.position.x, m_defaultYPos, transform.position.z);
+            m_oldTime = GlobalTime.getTime();
+
+            m_modelContainer.localPosition = m_modelContainerDefaultPos;
+            m_model.renderer.material.color = m_modelDefaultColor*m_health*0.01f;
+            if (m_hitTick > 0.0f)
+            {
+                m_hitTick -= Time.deltaTime;
+                m_modelContainer.localPosition += new Vector3(Mathf.Sin(m_hitTick*50.0f)*0.7f,0.0f,0.0f);
+                m_model.renderer.material.color = new Color(0.5f+Random.Range(0.0f, 1.0f), 0.5f+Random.Range(0.0f, 1.0f), 0.5f+Random.Range(0.0f, 1.0f));
+            }
+            // m_health = m_loggedHealthObject.localScale.x*100.0f;
+            if (m_health < 99.0f)
+            {
+                if (!m_hurtParticles.isPlaying) m_hurtParticles.Play();
+                float hitPrcnt = (100.0f - m_health) * 0.01f;
+                float shakeX = Mathf.Sin(GlobalTime.getTime() * (hitPrcnt*50.0f)) * hitPrcnt * Random.Range(-1.0f,1.0f);
+                float shakeY = Mathf.Cos(GlobalTime.getTime() * (hitPrcnt * 50.0f)) * hitPrcnt * Random.Range(-1.0f,1.0f);
+                m_modelContainer.localPosition += new Vector3(shakeX, shakeY, 0.0f);
+                m_hurtParticles.startSize = hitPrcnt * 4.0f;
+            }
+            else
+            {
+                if (m_hurtParticles.isPlaying) m_hurtParticles.Stop();
+            }
         }
         else
         {
-            if (m_moveParticles.isPlaying) m_moveParticles.Stop();
-        }
-        transform.position += new Vector3(0.0f, -delta, 0.0f);
-        if (transform.position.y < m_defaultYPos) 
-            transform.position = new Vector3(transform.position.x, m_defaultYPos, transform.position.z);
-        m_oldTime = GlobalTime.getTime();
+            if (transform.localScale.x > 0.0f)
+            {
+                transform.localScale -= Vector3.one*Time.deltaTime*0.3f;
+            }
+            else
+            {
+                transform.localScale = Vector3.zero;
+            }
 
-        m_modelContainer.localPosition = m_modelContainerDefaultPos;
-        m_model.renderer.material.color = m_modelDefaultColor*m_health*0.01f;
-        if (m_hitTick > 0.0f)
-        {
-            m_hitTick -= Time.deltaTime;
-            m_modelContainer.localPosition += new Vector3(Mathf.Sin(m_hitTick*50.0f)*0.7f,0.0f,0.0f);
-            m_model.renderer.material.color = new Color(0.5f+Random.Range(0.0f, 1.0f), 0.5f+Random.Range(0.0f, 1.0f), 0.5f+Random.Range(0.0f, 1.0f));
         }
-        // m_health = m_loggedHealthObject.localScale.x*100.0f;
-        if (m_health < 99.0f)
-        {
-            if (!m_hurtParticles.isPlaying) m_hurtParticles.Play();
-            float hitPrcnt = (100.0f - m_health) * 0.01f;
-            float shakeX = Mathf.Sin(GlobalTime.getTime() * (hitPrcnt*50.0f)) * hitPrcnt * Random.Range(-1.0f,1.0f);
-            float shakeY = Mathf.Cos(GlobalTime.getTime() * (hitPrcnt * 50.0f)) * hitPrcnt * Random.Range(-1.0f,1.0f);
-            m_modelContainer.localPosition += new Vector3(shakeX, shakeY, 0.0f);
-            m_hurtParticles.startSize = hitPrcnt * 4.0f;
-        }
-        else
-        {
-            if (m_hurtParticles.isPlaying) m_hurtParticles.Stop();
-        }
+        
 	}
 
     public bool damage(float p_value)
@@ -93,7 +125,7 @@ public class Artifact : MonoBehaviour
         return success;
     }
 
-    public bool damage2(float p_value)
+    public bool damage2(float p_value, Transform p_caller)
     {
         bool success = false;
         if (m_hitTick <= 0.0f)
@@ -102,6 +134,7 @@ public class Artifact : MonoBehaviour
             m_hitTick = m_hitCooldown;
             m_health -= p_value*100.0f;
             success = true;
+            Debug.Log("hurt by: " + p_caller.gameObject.name);
         }
         return success;
     }

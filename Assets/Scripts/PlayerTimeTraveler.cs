@@ -13,7 +13,7 @@ public class PlayerTimeTraveler : MonoBehaviour
     public Transform m_playerPrefab;
     private GlobalTime.State m_oldState;
     private float m_cooldown = 0.3f;
-    private static int m_ghostCreatedCounter = 0;
+    private static int   m_ghostCreatedCounter = 0;
     private static float m_maxGhostDepthOffset = 80;
     private static float m_ghostDepthOffsetStep = 4.0f;
     private bool m_justCreated = true;
@@ -29,6 +29,13 @@ public class PlayerTimeTraveler : MonoBehaviour
             m_buffer = buffer;
         }
 	}
+
+    void OnDestroy()
+    {
+        m_ghostCreatedCounter = 0;
+        m_maxGhostDepthOffset = 80;
+        m_ghostDepthOffsetStep = 4.0f;
+    }
 	
 	// Update is called once per frame
 	void Update () 

@@ -9,9 +9,11 @@ public class Startscript : MonoBehaviour
     public GUIText m_infoText;
     public GUIText m_upperText;
     public GUIText m_lowerText;
+    public Renderer m_playerIcon;
 	// Use this for initialization
 	void Start () 
     {
+        GlobalTime.reset();
         Time.timeScale = 0.0f;
         m_fadePlane.renderer.enabled = true;
         m_upperText.enabled = false;
@@ -23,6 +25,7 @@ public class Startscript : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
+        m_playerIcon.enabled = false;
         if (!m_start && Input.GetKey(KeyCode.Space))
         {
             m_start = true;
@@ -34,10 +37,12 @@ public class Startscript : MonoBehaviour
             m_fadePlane.renderer.material.color = Color.Lerp(m_fadePlane.renderer.material.color, new Color(0.0f, 0.0f, 0.0f, 0.0f), m_step);
             if (m_step >= 1.0f)
             {
+                m_playerIcon.enabled = true;
                 Destroy(gameObject);
                 m_upperText.enabled = true;
                 m_lowerText.enabled=true;
                 m_infoText.enabled = false;
+                m_start = false;
             }
         }
 	}

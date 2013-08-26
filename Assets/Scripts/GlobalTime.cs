@@ -31,6 +31,18 @@ public class GlobalTime : MonoBehaviour
     {
         m_sRewindSound = m_rewindSound;
 	}
+
+    public static void reset()
+    {
+        m_time = 0.0f;
+        m_locked = false;
+        m_currentState = State.ADVANCING;
+        m_rewindSpeed = 3.0f;
+        m_currentRewindAmountSec = 0.0f;
+        m_doRewind = false;
+        m_maxRewindTimeSec = 10.0f;
+        m_rewindCooldownTimeSec = 0.0f;
+    }
 	
 	// Update is called once per frame
 	void Update () 

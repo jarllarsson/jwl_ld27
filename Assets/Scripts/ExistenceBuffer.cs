@@ -173,7 +173,7 @@ public class ExistenceBuffer : MonoBehaviour
                     r.enabled = false;
                 }
                 m_renderersDisabled = true;
-                m_rendererReenableTick = 2;
+                m_rendererReenableTick = 1;
             }
         }
         else if (m_renderersDisabled)

@@ -16,7 +16,7 @@ public class TimeBasedDisabler : MonoBehaviour
     private PopInTimelineEffect m_timelineEffect;
     public bool m_popEffect = false;
     public string m_popEffectName = "PopOutOfTimeline";
-
+    public bool m_forceRefresh = false;
 	// Use this for initialization
 	void Start () 
     {
@@ -74,8 +74,9 @@ public class TimeBasedDisabler : MonoBehaviour
                 Destroy(gameObject);
             }
         }
-        else if (m_disableEngaged)
+        else if (m_disableEngaged || m_forceRefresh)
         {
+            m_forceRefresh = false;
             m_disableEngaged = false;
             // ENABLE
             if (m_disableRigidbodies)

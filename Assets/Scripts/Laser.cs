@@ -75,10 +75,15 @@ public class Laser : MonoBehaviour
                 EnemyController enemy = other.gameObject.GetComponent<EnemyController>();
                 if (enemy)
                 {
-                    enemy.damage(1.0f);
+                    if (enemy.damage(1.0f))
+                        explode();
                 }
             }
-            explode();
+            else
+            {
+                explode();
+            }
+
         }
 
     }

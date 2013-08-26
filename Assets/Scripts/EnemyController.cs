@@ -147,19 +147,33 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    public void damage(float p_dmg)
+    public bool damage(float p_dmg)
     {
-        if (m_disabler == null)
+        bool success = false;
+        bool goAhead = true;
+        if (GlobalTime.getTime() > m_dyingTime || !m_animObj.renderer.enabled)
+            goAhead = false;
+
+        if (goAhead)
         {
-            TimeBasedDisabler disabler = gameObject.AddComponent<TimeBasedDisabler>() as TimeBasedDisabler;
-            disabler.m_time = GlobalTime.getTime() + m_dieAnimTime;
-            disabler.m_popEffectName = "EnemDeath";
-            disabler.m_popEffect = true;
-            // disabler.m_disableColliders = false;
-            // disabler.m_disableRigidbodies = false;
-            m_disabler = disabler;
+            if (m_disabler == null)
+            {
+                TimeBasedDisabler disabler = gameObject.AddComponent<TimeBasedDisabler>() as TimeBasedDisabler;
+                disabler.m_popEffectName = "EnemDeath";
+                disabler.m_popEffect = true;
+                // disabler.m_disableColliders = false;
+                // disabler.m_disableRigidbodies = false;
+                m_disabler = disabler;
+            }
+            else
+            {
+                m_disabler.m_forceRefresh = true;
+            }
+            m_disabler.m_time = GlobalTime.getTime() + m_dieAnimTime;
             m_dyingTime = GlobalTime.getTime();
+            success = true;
         }
+        return success;
     }
 
     void dieAnim()
@@ -223,20 +237,28 @@ public class EnemyController : MonoBehaviour
 
     void hurtArtifact(Collider other)
     {
-        if (GlobalTime.getState()==GlobalTime.State.ADVANCING)
+        bool goAhead = true;
+        if (GlobalTime.getTime() > m_dyingTime || !m_animObj.renderer.enabled)
+            goAhead = false;
+
+        if (goAhead)
         {
-            if (other.gameObject.tag == "Artifact")
+            if (GlobalTime.getState() == GlobalTime.State.ADVANCING)
             {
-                if (!m_artifactScript) m_artifactScript = other.gameObject.GetComponent<Artifact>();
-                if (m_artifactScript)
+                if (other.gameObject.tag == "Artifact")
                 {
-                    if (m_artifactScript.damage2(m_dmgToArtifact))
+                    if (!m_artifactScript) m_artifactScript = other.gameObject.GetComponent<Artifact>();
+                    if (m_artifactScript)
                     {
-                        m_artifactDmgList.Add(GlobalTime.getTime());
+                        if (m_artifactScript.damage2(m_dmgToArtifact, transform))
+                        {
+                            m_artifactDmgList.Add(GlobalTime.getTime());
+                        }
                     }
                 }
             }
         }
+
     }
 
     void handleReverseDmg()

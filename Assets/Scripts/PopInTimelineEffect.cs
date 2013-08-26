@@ -23,9 +23,12 @@ public class PopInTimelineEffect : MonoBehaviour
     {
         transform.position = p_position;
         if (m_audio) m_audio.Play();
-        foreach (ParticleSystem psystem in m_particleSystems)
+        if (m_particleSystems!=null)
         {
-            psystem.Play();
+            foreach (ParticleSystem psystem in m_particleSystems)
+            {
+                if (psystem) psystem.Play();
+            }
         }
     }
 }
