@@ -285,6 +285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1740ec9637bd84a4c8fbaf98a2444b01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_kinematicWhenReversing: 1
   m_hideWhenNotSpawned: 0
 --- !u!114 &11400002
 MonoBehaviour:
@@ -316,11 +317,13 @@ MonoBehaviour:
   m_laser: {fileID: 400000, guid: 6d49a86daacd0354897d1f4b7996fe2a, type: 2}
   m_laserFeedbackY: 500
   m_laserFeedbackX: 150
-  m_laserTimeout: .5
+  m_laserTimeout: .400000006
   m_jumpSound: {fileID: 8200002}
   m_landSound: {fileID: 8200000}
-  m_animObject: {fileID: 0}
-  m_frameData: {fileID: 0}
+  m_frameData: {fileID: 11400008}
+  m_animRunSpd: 13
+  m_animIdleSpd: 5
+  m_shootAnimLen: .300000012
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -355,6 +358,7 @@ MonoBehaviour:
   m_frameData: {x: 0, y: 3}
   m_animstep: {x: .25, y: .25}
   m_animSpd: 1
+  m_animObject: {fileID: 2300000}
 --- !u!135 &13500000
 SphereCollider:
   m_ObjectHideFlags: 1

@@ -40,7 +40,8 @@ public class Laser : MonoBehaviour
             m_explodeRecreateTick -= Time.deltaTime;
         }
         if (!m_sound.isPlaying && GlobalTime.getTime() < m_buffer.getStartTime() + 0.1f &&
-            GlobalTime.getTime() > m_buffer.getStartTime() - 0.01f)
+            GlobalTime.getTime() > m_buffer.getStartTime() - 0.01f &&
+            GameOverScript.m_gameEnd==false)
         {
             m_sound.Play();
         }
@@ -62,25 +63,26 @@ public class Laser : MonoBehaviour
         if (other != collider && 
             other.gameObject.tag!="Laser" &&
             other.gameObject.tag!="Player" &&
-            other.gameObject.tag!="Artifact")
+            other.gameObject.tag!="Artifact" &&
+            other.gameObject.tag!="EnemDeath")
         {
-            if (m_disabler == null)
-            {
-                TimeBasedDisabler disabler = gameObject.AddComponent<TimeBasedDisabler>() as TimeBasedDisabler;
-                disabler.m_time = m_buffer.getEndTime();
-                m_explodedTime = GlobalTime.getTime();
-            }
-            if (other.gameObject.tag != "Enemy")
+
+
+            if (other.gameObject.tag == "Enemy")
             {
                 EnemyController enemy = other.gameObject.GetComponent<EnemyController>();
                 if (enemy)
                 {
                     if (enemy.damage(1.0f))
+                    {
+                        updateDisabler();
                         explode();
+                    }
                 }
             }
             else
             {
+                updateDisabler();
                 explode();
             }
 
@@ -95,6 +97,17 @@ public class Laser : MonoBehaviour
             m_laserExplode.transform.rotation = transform.rotation;
             m_laserExplode.play(transform.position);
             m_explodeRecreateTick = m_explodeRecreateTime;
+        }
+    }
+
+    void updateDisabler()
+    {
+        if (m_disabler == null)
+        {
+            TimeBasedDisabler disabler = gameObject.AddComponent<TimeBasedDisabler>() as TimeBasedDisabler;
+            disabler.m_time = m_buffer.getEndTime();
+            m_explodedTime = GlobalTime.getTime();
+            m_disabler = disabler;
         }
     }
 }

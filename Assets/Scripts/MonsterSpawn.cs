@@ -23,7 +23,7 @@ public class MonsterSpawn : MonoBehaviour {
         if (GlobalTime.getState()==GlobalTime.State.ADVANCING
             && GlobalTime.getTime() > m_maxGlobalTime)
         {
-            m_intervalCount += (1.0f+m_intervalAdd)*Time.deltaTime;     
+            m_intervalCount += (1.0f+m_intervalAdd+(0.1f*(Startscript.m_difficulty-1)))*Time.deltaTime;     
             m_maxGlobalTime=GlobalTime.getTime();
             if (m_intervalCount > m_interval)
             {

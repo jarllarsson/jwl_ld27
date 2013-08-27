@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 400000}
   m_Layer: 0
   m_Name: EnemDeath
-  m_TagString: Untagged
+  m_TagString: EnemDeath
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27,7 +27,7 @@ GameObject:
   - 199: {fileID: 19900000}
   m_Layer: 0
   m_Name: Particle System
-  m_TagString: Untagged
+  m_TagString: EnemDeath
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,7 +44,7 @@ GameObject:
   - 199: {fileID: 19900002}
   m_Layer: 0
   m_Name: Particle System
-  m_TagString: Untagged
+  m_TagString: EnemDeath
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviour
                 //m_isJumping = true;
                 m_onGround = false;
                 rigidbody.AddForce(0.0f, m_jumpPower, 0.0f);
-                if (!m_jumpSound.isPlaying) m_jumpSound.Play();
+                if (!m_jumpSound.isPlaying && GameOverScript.m_gameEnd==false) m_jumpSound.Play();
             }
 
             // Movement
@@ -101,12 +101,26 @@ public class PlayerController : MonoBehaviour
             }
 
             // Laser
-            if (Input.GetAxis("Fire1") > 0.3f && m_laserTimeoutTick <= 0.0f)
+            Vector2 fireaxis = new Vector2(Input.GetAxis("FireHoriz"),Input.GetAxis("FireVert"));
+            Vector2 absFireAxis = new Vector2(Mathf.Abs(fireaxis.x),Mathf.Abs(fireaxis.y));
+            if ((Input.GetAxis("Fire1") > 0.3f || absFireAxis.x>0.3f || absFireAxis.y>0.3f) && 
+                m_laserTimeoutTick <= 0.0f)
             {
                 m_laserTimeoutTick = m_laserTimeout;
-                float hpoint = m_lookDir;
-                if (Mathf.Abs(horizAxis) > 0.0f || Mathf.Abs(vertAxis) > 0.0f) hpoint = horizAxis;
-                m_shootPointDir = new Vector2(hpoint, vertAxis);
+                if (absFireAxis.x < 0.3f && absFireAxis.y < 0.3f)
+                {
+                    float hpoint = m_lookDir;
+                    if (Mathf.Abs(horizAxis) > 0.0f || Mathf.Abs(vertAxis) > 0.0f) hpoint = horizAxis;
+                    m_shootPointDir = new Vector2(hpoint, vertAxis);
+                }
+                else
+                {
+                    m_shootPointDir.x = 0.0f;
+                    m_shootPointDir.y = 0.0f;
+                    if (absFireAxis.x > 0.3f) m_shootPointDir.x = Mathf.Clamp(fireaxis.x + (0.5f * (fireaxis.x / absFireAxis.x)), -1.0f, 1.0f);
+                    if (absFireAxis.y > 0.3f) m_shootPointDir.y = Mathf.Clamp(fireaxis.y + (0.5f * (fireaxis.y / absFireAxis.y)), -1.0f, 1.0f);
+                    Debug.Log(m_shootPointDir);
+                }
                 m_laserThrowback = new Vector3(-m_shootPointDir.x * m_laserFeedbackX, 0.0f, 0.0f);
                 rigidbody.AddForce(0.0f, -m_shootPointDir.y * m_laserFeedbackY, 0.0f);
                 Instantiate(m_laser, transform.position, Quaternion.AngleAxis(Mathf.Rad2Deg * Mathf.Atan2(m_shootPointDir.y, m_shootPointDir.x), Vector3.forward));
@@ -192,7 +206,7 @@ public class PlayerController : MonoBehaviour
         if (p_hitNormalVector.y > 0.7f && 
             rigidbody.velocity.y<=0.0f)
         {
-            if (!m_onGround && !m_landSound.isPlaying) m_landSound.Play();
+            if (!m_onGround && !m_landSound.isPlaying && GameOverScript.m_gameEnd == false) m_landSound.Play();
             m_onGround = true;
         }
     }

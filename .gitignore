@@ -11,5 +11,6 @@
 *.pidb
 *.userprefs
 *.suo
-
+*.zip
+*.rar
 

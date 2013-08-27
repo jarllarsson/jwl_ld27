@@ -60,7 +60,7 @@ public class Artifact : MonoBehaviour
             float delta = 0.5f*(GlobalTime.getTime() - m_oldTime);
             if (delta < 0.0f)
             {
-                delta *= 2.5f;
+                delta *= 2.5f-(0.1f*(Startscript.m_difficulty-1));
                 if (!m_moveParticles.isPlaying) m_moveParticles.Play();
             }
             else
@@ -117,7 +117,7 @@ public class Artifact : MonoBehaviour
             m_healthObjBuffer.isWritingToBuffer() &&
             GlobalTime.getState()==GlobalTime.State.ADVANCING)
         {
-            if (m_hurtSound && !m_hurtSound.isPlaying) m_hurtSound.Play();
+            if (m_hurtSound && !m_hurtSound.isPlaying && GameOverScript.m_gameEnd == false) m_hurtSound.Play();
             m_hitTick = m_hitCooldown;
             m_loggedHealthObject.localScale -= new Vector3(p_value, p_value, p_value);
             success = true;
@@ -130,7 +130,7 @@ public class Artifact : MonoBehaviour
         bool success = false;
         if (m_hitTick <= 0.0f)
         {
-            if (m_hurtSound && !m_hurtSound.isPlaying) m_hurtSound.Play();
+            if (m_hurtSound && !m_hurtSound.isPlaying && GameOverScript.m_gameEnd == false) m_hurtSound.Play();
             m_hitTick = m_hitCooldown;
             m_health -= p_value*100.0f;
             success = true;

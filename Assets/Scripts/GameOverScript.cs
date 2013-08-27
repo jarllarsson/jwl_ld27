@@ -3,7 +3,8 @@ using System.Collections;
 
 public class GameOverScript : MonoBehaviour 
 {
-    public static bool m_start = false;
+    public bool m_start = false;
+    public static bool m_gameEnd = false;
     private float m_step = 0.0f;
     public Transform m_fadePlane;
     public GUIText m_infoText;
@@ -15,6 +16,9 @@ public class GameOverScript : MonoBehaviour
     public Renderer m_rewindIcon;
     public Renderer m_rewindBar;
     public Renderer m_rewindBar2;
+    public PlayerController   m_playerController;
+    public PlayerTimeTraveler m_playerTimetraveler;
+    private bool hasPressed = true;
     // Use this for initialization
     void Start()
     {
@@ -27,6 +31,10 @@ public class GameOverScript : MonoBehaviour
     {
         if (m_start)
         {
+            bool press = Input.GetKey(KeyCode.Space);
+            m_gameEnd = true;
+            if (m_playerController != null) m_playerController.enabled = false;
+            if (m_playerTimetraveler != null) m_playerTimetraveler.enabled = false;
             m_playerIcon.enabled = false;
             m_rewindIcon.enabled = false;
             m_rewindBar.enabled = false;
@@ -41,11 +49,14 @@ public class GameOverScript : MonoBehaviour
 //                 m_lowerText.enabled = true;
 //                 m_infoText.enabled = false;
 //             }
-            if (Input.GetKey(KeyCode.Space))
+            if (press && !hasPressed)
             {
+                m_gameEnd = false;
+                m_start = false;
                 GlobalTime.reset();
                 Application.LoadLevel(Application.loadedLevel);
             }
+            hasPressed = press;
         }
     }
 
@@ -53,7 +64,7 @@ public class GameOverScript : MonoBehaviour
     {
         if (m_showTime)
         {
-            m_text += "\nAchieved in <color=#E2DE7D>" + GlobalTime.getTime().ToString() + "</color> seconds!";
+            m_text += "\nAchieved in <color=#E2DE7D>" + GlobalTime.getTime().ToString() + "</color> seconds!\nDifficulty: "+Startscript.m_difficulty+".";
         }
         m_text += "\n[press SPACE to restart]";
         m_start = true;
