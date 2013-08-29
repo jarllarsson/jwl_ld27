@@ -13,7 +13,7 @@ public class MonsterSpawn : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-	
+        m_intervalCount = Random.Range(0.0f,m_interval);
 	}
 	
 	// Update is called once per frame
@@ -21,14 +21,17 @@ public class MonsterSpawn : MonoBehaviour {
     {
 
         if (GlobalTime.getState()==GlobalTime.State.ADVANCING
-            && GlobalTime.getTime() > m_maxGlobalTime)
+            /*&& GlobalTime.getTime() > m_maxGlobalTime*/)
         {
             m_intervalCount += (1.0f+m_intervalAdd+(0.1f*(Startscript.m_difficulty-1)))*Time.deltaTime;     
             m_maxGlobalTime=GlobalTime.getTime();
             if (m_intervalCount > m_interval)
             {
-                m_intervalAdd += m_speedIncrease;
-                if (m_intervalAdd > m_maxSpeedIncrease) m_intervalAdd = m_maxSpeedIncrease;
+                if (GlobalTime.getTime() > m_maxGlobalTime)
+                {
+                    m_intervalAdd += m_speedIncrease;
+                    if (m_intervalAdd > m_maxSpeedIncrease) m_intervalAdd = m_maxSpeedIncrease;
+                }
                 m_intervalCount = 0.0f;
                 Instantiate(m_enemyPrefab, transform.position, transform.rotation);
             }

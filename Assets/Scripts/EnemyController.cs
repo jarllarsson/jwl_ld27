@@ -78,8 +78,8 @@ public class EnemyController : MonoBehaviour
             if (m_enemyType == Type.WALKING)
             {
                 //Debug.DrawLine(transform.position + Vector3.up, transform.position + Vector3.up + Vector3.down * 3.0f, Color.red, 1.0f);
-                if (m_coolDownFakePathfind>0.0f ||
-                    Physics.Raycast(new Ray(transform.position + Vector3.up - Vector3.forward * 30.0f, Vector3.down), 3.0f,m_layerMask))
+                if (m_coolDownFakePathfind > 0.0f ||
+                    Physics.Raycast(new Ray(transform.position + Vector3.up - Vector3.forward * 30.0f, Vector3.down), 3.0f/*, m_layerMask*/))
                 {
                     targetDir = new Vector3(m_fakePathFind, targetDir.y, targetDir.z);
                     //Debug.DrawLine(transform.position + Vector3.up, transform.position + Vector3.up + Vector3.down * 3.0f, Color.green, 1.0f);
@@ -87,9 +87,9 @@ public class EnemyController : MonoBehaviour
                 }
                 m_coolDownFakePathfind -= Time.deltaTime;
                 m_flipDirPathfindTick -= Time.deltaTime;
-                if (m_flipDirPathfindTick < -10.0f)
+                if (m_flipDirPathfindTick < 0.0f)
                 {
-                    m_flipDirPathfindTick = Random.Range(1.0f,20.0f);
+                    m_flipDirPathfindTick = Random.Range(100.0f,300.0f);
                     m_fakePathFind *= -1.0f;
                 }
             }
@@ -155,7 +155,7 @@ public class EnemyController : MonoBehaviour
     {
         bool success = false;
         bool goAhead = true;
-        if (GlobalTime.getTime() > m_dyingTime || !m_animObj.renderer.enabled || m_buffer.isBeforeBuffer())
+        if (isDying() || !m_animObj.renderer.enabled || m_buffer.isBeforeBuffer())
             goAhead = false;
 
         if (goAhead)
@@ -180,11 +180,16 @@ public class EnemyController : MonoBehaviour
         return success;
     }
 
+    public bool isDying()
+    {
+        return GlobalTime.getTime() > m_dyingTime;
+    }
+
     void dieAnim()
     {
         if (m_disabler)
         {
-            if (GlobalTime.getTime() > m_dyingTime &&
+            if (isDying() &&
                 GlobalTime.getTime() < m_disabler.m_time)
             {
                 m_dieBlink = true;
@@ -245,7 +250,7 @@ public class EnemyController : MonoBehaviour
     void hurtArtifact(Collider other)
     {
         bool goAhead = true;
-        if (GlobalTime.getTime() > m_dyingTime || !m_animObj.renderer.enabled || m_buffer.isBeforeBuffer())
+        if (isDying() || !m_animObj.renderer.enabled || m_buffer.isBeforeBuffer())
             goAhead = false;
 
         if (goAhead)
@@ -304,7 +309,7 @@ public class EnemyController : MonoBehaviour
     private void wallBounce(Vector3 p_hitNormalVector)
     {
         float absVecX = Mathf.Abs(p_hitNormalVector.x);
-        if (absVecX > 0.7f)
+        if (absVecX > 0.7f && Random.Range(0.0f,100.0f)>50.0f)
         {
             m_movedir += p_hitNormalVector.x * m_moveSpeed * 10.0f;
             m_fakePathFind = p_hitNormalVector.x;
@@ -327,7 +332,7 @@ public class EnemyController : MonoBehaviour
         int count = 0;
         foreach (ContactPoint contact in p_collision.contacts)
         {
-            Debug.DrawRay(contact.point, contact.normal, Color.white, 1.0f);
+            //Debug.DrawRay(contact.point, contact.normal, Color.white, 1.0f);
             count++;
             normal += contact.normal;
         }

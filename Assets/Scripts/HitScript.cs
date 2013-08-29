@@ -103,18 +103,22 @@ public class HitScript : MonoBehaviour
             GlobalTime.getState() == GlobalTime.State.ADVANCING &&
             p_hitter.tag == "Enemy")
         {
-            ExistenceBuffer m_enemBuffer = p_hitter.GetComponent<ExistenceBuffer>();
-            if (!m_enemBuffer || (m_enemBuffer && !m_enemBuffer.isBeforeBuffer() && m_enemBuffer.isWritingToBuffer()))
-            { 
-                Debug.Log("HIT!");
-                m_hurtBarPunishmentParticle.Play();
-                GlobalTime.addCooldownPunishment(m_punishAmount);
-                m_hitDir = transform.position - p_hitter.transform.position;
-                m_hitDir.y += 0.3f;
-                m_hitDir.z = 0.0f; m_hitDir.Normalize();
-                rigidbody.AddForce(m_hitDir * m_hitPushForce);
-                m_hitAnimTime = m_hitAnimTimeLim;
-                m_hitCooldownTime = m_hitCooldownTimeLim;
+            EnemyController m_enemcontroller = p_hitter.GetComponent<EnemyController>();
+            if (m_enemcontroller && !m_enemcontroller.isDying())
+            {
+                ExistenceBuffer m_enemBuffer = p_hitter.GetComponent<ExistenceBuffer>();
+                if (!m_enemBuffer || (m_enemBuffer && !m_enemBuffer.isBeforeBuffer()))
+                {
+                    Debug.Log("HIT!");
+                    m_hurtBarPunishmentParticle.Play();
+                    GlobalTime.addCooldownPunishment(m_punishAmount);
+                    m_hitDir = transform.position - p_hitter.transform.position;
+                    m_hitDir.y += 0.3f;
+                    m_hitDir.z = 0.0f; m_hitDir.Normalize();
+                    rigidbody.AddForce(m_hitDir * m_hitPushForce);
+                    m_hitAnimTime = m_hitAnimTimeLim;
+                    m_hitCooldownTime = m_hitCooldownTimeLim;
+                }
             }
         }
     }
