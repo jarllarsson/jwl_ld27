@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 m_laserThrowback;
     public AudioSource m_jumpSound;
     public AudioSource m_landSound;
+    public ExistenceBuffer m_buffer;
 
     public FrameData m_frameData;
     public float m_animRunSpd = 10.0f;
@@ -28,6 +29,8 @@ public class PlayerController : MonoBehaviour
     public float m_shootAnimLen = 0.3f;
     private float m_shootAnimTick = 0.0f;
     private Vector2 m_shootPointDir;
+
+    public HitScript m_hit;
     
 	// Use this for initialization
     void Awake()
@@ -56,7 +59,9 @@ public class PlayerController : MonoBehaviour
 	// Update is called once per frame
 	void FixedUpdate () 
     {
-        if (GlobalTime.getState()==GlobalTime.State.ADVANCING)
+        if (GlobalTime.getState()==GlobalTime.State.ADVANCING
+            && !m_hit.isHit() &&
+            !m_buffer.isBeforeBuffer() && m_buffer.isWritingToBuffer())
         {
             float spd = m_moveSpeed;
             if (m_onGround)
@@ -127,7 +132,7 @@ public class PlayerController : MonoBehaviour
                 m_shootAnimTick = m_shootAnimLen;
             }
             velocity += m_laserThrowback * Time.deltaTime;
-            m_laserThrowback *= 0.99f;
+            m_laserThrowback *= 0.89f;
             if (m_shootAnimTick > 0.0f)
                 m_shootAnimTick -= Time.deltaTime;
             else
@@ -187,9 +192,12 @@ public class PlayerController : MonoBehaviour
 
     void collisionResponse(Collision p_hit)
     {
-        Vector3 avgNormal = averageGroundNormal(p_hit);
-        wallBounce(avgNormal);
-        tryEnableJump(avgNormal);
+        if (!m_buffer.isBeforeBuffer() && m_buffer.isWritingToBuffer())
+        {
+            Vector3 avgNormal = averageGroundNormal(p_hit);
+            wallBounce(avgNormal);
+            tryEnableJump(avgNormal);
+        }
     }
 
     private void wallBounce(Vector3 p_hitNormalVector)

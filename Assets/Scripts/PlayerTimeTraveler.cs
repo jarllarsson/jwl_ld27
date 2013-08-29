@@ -97,6 +97,9 @@ public class PlayerTimeTraveler : MonoBehaviour
                 // Set up clone
                 Transform newPlayer = Instantiate(m_playerPrefab, transform.position, transform.rotation) as Transform;
                 newPlayer.name = "Player" + m_ghostCreatedCounter;
+                ExistenceBuffer buf = newPlayer.GetComponent<ExistenceBuffer>();
+                buf.cloneData(m_buffer);
+
 
                 // Set this player as a ghost
                 Renderer playerRenderer = transform.GetComponentInChildren<Renderer>();
@@ -105,9 +108,9 @@ public class PlayerTimeTraveler : MonoBehaviour
                 disabler.m_popEffect = true;
                 disabler.m_time = m_buffer.getEndTime();
                 transform.position -= Vector3.forward * (1.0f+((m_ghostDepthOffsetStep *(float) m_ghostCreatedCounter)%m_maxGhostDepthOffset));
+                m_buffer.m_hideWhenNotSpawned = true;
 
-
-                //clonedBuf.cloneData(m_buffer);
+                
                 // destroy scripts on clone
                 // Debug.Log("HEJ");
                 foreach (MonoBehaviour script in m_scriptsToDisableOnClone)

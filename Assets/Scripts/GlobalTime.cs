@@ -83,6 +83,13 @@ public class GlobalTime : MonoBehaviour
         return success;
     }
 
+    public static void addCooldownPunishment(float p_time)
+    {
+        m_rewindCooldownTimeSec += p_time;
+        if (m_rewindCooldownTimeSec > m_maxRewindTimeSec)
+            m_rewindCooldownTimeSec = m_maxRewindTimeSec;
+    }
+
     public static float getCurrentSpeedup()
     {
         if (m_currentState == State.REWINDING)

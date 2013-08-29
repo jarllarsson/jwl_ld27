@@ -39,9 +39,12 @@ public class EnemyController : MonoBehaviour
     private float m_fakePathFind = 1.0f;
     private float m_coolDownFakePathfind = 0.0f;
     private float m_flipDirPathfindTick = 0.0f;
+    private int m_ignoreLayer = 8;
+    private int m_layerMask;
 	// Use this for initialization
 	void Start () 
     {
+        m_layerMask = ~(1 << m_ignoreLayer);
         m_fakePathFind = Mathf.Clamp((float)Random.Range(-2, 2),-1.0f,1.0f);
         if (m_fakePathFind == 0.0f) m_fakePathFind = 1.0f;
         if (m_artifact == null)
@@ -67,7 +70,8 @@ public class EnemyController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (GlobalTime.getState() == GlobalTime.State.ADVANCING && m_artifact)
+        if (GlobalTime.getState() == GlobalTime.State.ADVANCING && m_artifact &&
+            !m_buffer.isBeforeBuffer() && m_buffer.isWritingToBuffer())
         {
             Vector3 targetDir = (m_artifact.position - transform.position).normalized;
 
@@ -75,7 +79,7 @@ public class EnemyController : MonoBehaviour
             {
                 //Debug.DrawLine(transform.position + Vector3.up, transform.position + Vector3.up + Vector3.down * 3.0f, Color.red, 1.0f);
                 if (m_coolDownFakePathfind>0.0f ||
-                    Physics.Raycast(new Ray(transform.position + Vector3.up - Vector3.forward * 30.0f, Vector3.down), 3.0f))
+                    Physics.Raycast(new Ray(transform.position + Vector3.up - Vector3.forward * 30.0f, Vector3.down), 3.0f,m_layerMask))
                 {
                     targetDir = new Vector3(m_fakePathFind, targetDir.y, targetDir.z);
                     //Debug.DrawLine(transform.position + Vector3.up, transform.position + Vector3.up + Vector3.down * 3.0f, Color.green, 1.0f);
@@ -151,7 +155,7 @@ public class EnemyController : MonoBehaviour
     {
         bool success = false;
         bool goAhead = true;
-        if (GlobalTime.getTime() > m_dyingTime || !m_animObj.renderer.enabled)
+        if (GlobalTime.getTime() > m_dyingTime || !m_animObj.renderer.enabled || m_buffer.isBeforeBuffer())
             goAhead = false;
 
         if (goAhead)
@@ -220,9 +224,12 @@ public class EnemyController : MonoBehaviour
 
     void collisionResponse(Collision p_hit)
     {
-        Vector3 avgNormal = averageGroundNormal(p_hit);
-        wallBounce(avgNormal);
-        tryEnableJump(avgNormal);
+        if (!m_buffer.isBeforeBuffer() && m_buffer.isWritingToBuffer())
+        {
+            Vector3 avgNormal = averageGroundNormal(p_hit);
+            wallBounce(avgNormal);
+            tryEnableJump(avgNormal);
+        }
     }
 
     void OnTriggerStay(Collider other)
@@ -238,7 +245,7 @@ public class EnemyController : MonoBehaviour
     void hurtArtifact(Collider other)
     {
         bool goAhead = true;
-        if (GlobalTime.getTime() > m_dyingTime || !m_animObj.renderer.enabled)
+        if (GlobalTime.getTime() > m_dyingTime || !m_animObj.renderer.enabled || m_buffer.isBeforeBuffer())
             goAhead = false;
 
         if (goAhead)
