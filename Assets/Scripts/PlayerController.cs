@@ -31,6 +31,10 @@ public class PlayerController : MonoBehaviour
     private Vector2 m_shootPointDir;
 
     public HitScript m_hit;
+
+    float m_laserMpCount = 0.0f;
+    float m_laserMpCountIncSpd = 0.2f;
+    float m_maxLaserMpCount = 1.5f;
     
 	// Use this for initialization
     void Awake()
@@ -52,8 +56,46 @@ public class PlayerController : MonoBehaviour
     {
         if (m_laserTimeoutTick > 0.0f)
         {
-            m_laserTimeoutTick -= Time.deltaTime;
+            float prcnt = GlobalTime.getCurrentCooldownPercent();
+            float hit = 0.05f;
+            if (prcnt < 0.3f && prcnt > 0.01f)
+                prcnt = 0.3f + hit;
+            else if (prcnt <= 0.01f)
+            {
+                prcnt = -0.3f;
+            }
+            else
+            {
+                prcnt += hit;
+                m_laserMpCount = 0.0f;
+            }
+            float mp = Mathf.Clamp(1.0f - prcnt, 0.3f, 1.0f) + m_laserMpCount;
+            m_laserTimeoutTick -= Time.deltaTime * mp;
         }
+
+        if (isFireKeyPressed())
+        {
+            // laser Cooldown decrease as you fire(while no rewind cooldown)
+            m_laserMpCount += Time.deltaTime * m_laserMpCountIncSpd;
+            if (m_laserMpCount > m_maxLaserMpCount)
+                m_laserMpCount = m_maxLaserMpCount;
+        }
+        else
+            m_laserMpCount = 0.0f;
+
+    }
+
+    bool isFireKeyPressed()
+    {
+        Vector2 a, b;
+        return isFireKeyPressed(out a, out b);
+    }
+
+    bool isFireKeyPressed(out Vector2 p_axis, out Vector2 p_absAxis)
+    {
+        p_axis = new Vector2(Input.GetAxis("FireHoriz"),Input.GetAxis("FireVert"));
+        p_absAxis = new Vector2(Mathf.Abs(p_axis.x),Mathf.Abs(p_axis.y));
+        return (Input.GetAxis("Fire1") > 0.3f || p_absAxis.x>0.3f || p_absAxis.y>0.3f);
     }
 	
 	// Update is called once per frame
@@ -61,7 +103,8 @@ public class PlayerController : MonoBehaviour
     {
         if (GlobalTime.getState()==GlobalTime.State.ADVANCING
             && !m_hit.isHit() &&
-            !m_buffer.isBeforeBuffer() && m_buffer.isWritingToBuffer())
+            !m_buffer.isBeforeBuffer() && m_buffer.isWritingToBuffer() &&
+            !GameOverScript.m_gameEnd)
         {
             float spd = m_moveSpeed;
             if (m_onGround)
@@ -108,9 +151,9 @@ public class PlayerController : MonoBehaviour
             }
 
             // Laser
-            Vector2 fireaxis = new Vector2(Input.GetAxis("FireHoriz"),Input.GetAxis("FireVert"));
-            Vector2 absFireAxis = new Vector2(Mathf.Abs(fireaxis.x),Mathf.Abs(fireaxis.y));
-            if ((Input.GetAxis("Fire1") > 0.3f || absFireAxis.x>0.3f || absFireAxis.y>0.3f) && 
+            Vector2 fireaxis;
+            Vector2 absFireAxis;
+            if (isFireKeyPressed(out fireaxis,out absFireAxis) && 
                 m_laserTimeoutTick <= 0.0f)
             {
                 m_laserTimeoutTick = m_laserTimeout;
@@ -130,7 +173,9 @@ public class PlayerController : MonoBehaviour
                 }
                 m_laserThrowback = new Vector3(-m_shootPointDir.x * m_laserFeedbackX, 0.0f, 0.0f);
                 if (!jumpThisFrame) rigidbody.AddForce(0.0f, -m_shootPointDir.y * m_laserFeedbackY, 0.0f);
-                Instantiate(m_laser, transform.position, Quaternion.AngleAxis(Mathf.Rad2Deg * Mathf.Atan2(m_shootPointDir.y, m_shootPointDir.x), Vector3.forward));
+                Transform laserObj = Instantiate(m_laser, transform.position, 
+                                                 Quaternion.AngleAxis(Mathf.Rad2Deg * Mathf.Atan2(m_shootPointDir.y, m_shootPointDir.x), Vector3.forward)) as Transform;
+                //laserObj.localScale = new Vector3(laserObj.localScale.x, laserObj.localScale.y * scale, laserObj.localScale.z);
                 m_shootAnimTick = m_shootAnimLen;
             }
             velocity += m_laserThrowback * Time.deltaTime;

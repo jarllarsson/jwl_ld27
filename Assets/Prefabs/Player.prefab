@@ -317,7 +317,7 @@ MonoBehaviour:
   m_maxMovespeed: 600
   m_laser: {fileID: 400000, guid: 6d49a86daacd0354897d1f4b7996fe2a, type: 2}
   m_laserFeedbackY: 460
-  m_laserFeedbackX: 150
+  m_laserFeedbackX: 110
   m_laserTimeout: .200000003
   m_jumpSound: {fileID: 8200002}
   m_landSound: {fileID: 8200000}

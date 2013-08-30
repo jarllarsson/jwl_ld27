@@ -40,7 +40,7 @@ public class PlayerTimeTraveler : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        if (m_cooldown <= 0.0f)
+        if (m_cooldown <= 0.0f && !GameOverScript.m_gameEnd)
         {
             if (m_justCreated && GlobalTime.getCurrentCooldown() <= 0.0f)
             {
