@@ -316,11 +316,12 @@ MonoBehaviour:
   m_airMoveSpeed: 50
   m_maxMovespeed: 600
   m_laser: {fileID: 400000, guid: 6d49a86daacd0354897d1f4b7996fe2a, type: 2}
-  m_laserFeedbackY: 500
+  m_laserFeedbackY: 460
   m_laserFeedbackX: 150
-  m_laserTimeout: .400000006
+  m_laserTimeout: .200000003
   m_jumpSound: {fileID: 8200002}
   m_landSound: {fileID: 8200000}
+  m_buffer: {fileID: 11400000}
   m_frameData: {fileID: 11400008}
   m_animRunSpd: 13
   m_animIdleSpd: 5
@@ -383,6 +384,7 @@ MonoBehaviour:
   m_hurtTint: {r: .507352948, g: .138029858, b: .191517949, a: 1}
   m_cooldownTint: {r: .507352948, g: .507352948, b: .507352948, a: .192156866}
   m_shakeMul: {x: .300000012, y: .600000024}
+  m_hurtBarPunishmentParticle: {fileID: 0}
 --- !u!135 &13500000
 SphereCollider:
   m_ObjectHideFlags: 1
