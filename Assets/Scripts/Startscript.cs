@@ -18,7 +18,7 @@ public class Startscript : MonoBehaviour
     {
         m_difficulty = 1;
         GlobalTime.reset();
-        Time.timeScale = 0.0f;
+        SceneScript.s_customTimeScale = 0.0f;
         m_fadePlane.renderer.enabled = true;
         m_upperText.enabled = false;
         m_lowerText.enabled = false;
@@ -31,6 +31,11 @@ public class Startscript : MonoBehaviour
 	void Update () 
     {
         bool press = Input.GetKey(KeyCode.Space);
+        #if UNITY_ANDROID || UNITY_IPHONE
+            press = true;
+            hasPressed = false;
+        #endif
+
         m_playerIcon.enabled = false;
         if (!m_start && press && !hasPressed)
         {
@@ -60,10 +65,11 @@ public class Startscript : MonoBehaviour
         if (m_start)
         {
             m_step += 10.0f * Mathf.Max(0.01f, Time.deltaTime);
-            Time.timeScale = Mathf.Lerp(Time.timeScale, 1.0f, m_step);
+            SceneScript.s_customTimeScale = Mathf.Lerp(SceneScript.s_customTimeScale, 1.0f, m_step);
             m_fadePlane.renderer.material.color = Color.Lerp(m_fadePlane.renderer.material.color, new Color(0.0f, 0.0f, 0.0f, 0.0f), m_step);
             if (m_step >= 1.0f)
             {
+                SceneScript.s_customTimeScale = 1.0f;
                 m_playerIcon.enabled = true;
                 Destroy(gameObject);
                 m_upperText.enabled = true;

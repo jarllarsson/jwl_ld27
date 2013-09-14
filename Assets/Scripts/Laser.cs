@@ -37,7 +37,7 @@ public class Laser : MonoBehaviour
     {
         if (m_explodeRecreateTick > 0.0f)
         {
-            m_explodeRecreateTick -= Time.deltaTime;
+            m_explodeRecreateTick -= SceneScript.deltaTime();
         }
         if (!m_sound.isPlaying && GlobalTime.getTime() < m_buffer.getStartTime() + 0.1f &&
             GlobalTime.getTime() > m_buffer.getStartTime() - 0.01f &&
@@ -51,7 +51,7 @@ public class Laser : MonoBehaviour
 	void FixedUpdate () 
     {
         Vector3 velocity = (transform.right * m_speed) - rigidbody.velocity;
-        rigidbody.AddForce(velocity, ForceMode.VelocityChange);
+        rigidbody.AddForce(velocity * SceneScript.s_customTimeScale, ForceMode.VelocityChange);
 
         if (GlobalTime.getTime() < m_explodedTime + 0.1f && 
             GlobalTime.getTime() > m_explodedTime - 0.01f)

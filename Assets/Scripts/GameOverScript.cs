@@ -39,8 +39,8 @@ public class GameOverScript : MonoBehaviour
             m_rewindIcon.enabled = false;
             m_rewindBar.enabled = false;
             m_rewindBar2.enabled = false;
-            m_step += Mathf.Max(0.0001f, Time.deltaTime*0.01f);
-            Time.timeScale = Mathf.Lerp(Time.timeScale, 0.0f, m_step);
+            m_step += Mathf.Max(0.0001f, Time.deltaTime);
+            SceneScript.s_customTimeScale = Mathf.Lerp(SceneScript.s_customTimeScale, 0.0f, m_step);
             m_fadePlane.renderer.material.color = Color.Lerp(m_fadePlane.renderer.material.color, new Color(0.0f, 0.0f, 0.0f, 0.7f), m_step);
 //             if (m_step >= 1.0f)
 //             {

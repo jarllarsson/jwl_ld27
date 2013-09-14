@@ -20,6 +20,8 @@ public class PlayerTimeTraveler : MonoBehaviour
     public Transform m_timetravelAvailableEffectPrefab;
     public Transform m_timetravelAvailableEffect;
 
+    public ButtonScript travelBtn;
+
 	// Use this for initialization
 	void Start () 
     {      
@@ -40,7 +42,8 @@ public class PlayerTimeTraveler : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        if (m_cooldown <= 0.0f && !GameOverScript.m_gameEnd)
+        if (SceneScript.s_customTimeScale>0.0f &&
+            m_cooldown <= 0.0f && !GameOverScript.m_gameEnd)
         {
             if (m_justCreated && GlobalTime.getCurrentCooldown() <= 0.0f)
             {
@@ -51,6 +54,7 @@ public class PlayerTimeTraveler : MonoBehaviour
 
             // new input
             float rewindButton = Input.GetAxis("Fire2");
+            if (travelBtn.readPress()) rewindButton = 1.0f;
 
             if (rewindButton > 0.5f && GlobalTime.getCurrentCooldown()<=0.0f)
             {
@@ -121,7 +125,7 @@ public class PlayerTimeTraveler : MonoBehaviour
         }
         else
         {
-            m_cooldown-=Time.deltaTime;
+            m_cooldown -= SceneScript.deltaTime();
         }
 
         m_oldState = GlobalTime.getState();

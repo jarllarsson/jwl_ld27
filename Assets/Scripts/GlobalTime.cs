@@ -118,7 +118,7 @@ public class GlobalTime : MonoBehaviour
     {
         if (m_rewindCooldownTimeSec > 0.0f)
         {
-            m_rewindCooldownTimeSec -= Time.deltaTime;
+            m_rewindCooldownTimeSec -= SceneScript.deltaTime();
         }
         else
         {
@@ -148,14 +148,14 @@ public class GlobalTime : MonoBehaviour
 
     public static float advanceTime()
     {
-        m_time += Time.deltaTime;
+        m_time += SceneScript.deltaTime();
         return m_time;
     }
 
     public static float retardTime() // ahahahahahah. tired
     {
         float oldTime = m_time;
-        m_time -= m_rewindSpeed*Time.deltaTime;
+        m_time -= m_rewindSpeed * SceneScript.deltaTime();
         if (m_time < 0.0f)
         {
             m_time = 0.0f;

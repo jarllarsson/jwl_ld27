@@ -85,8 +85,8 @@ public class EnemyController : MonoBehaviour
                     //Debug.DrawLine(transform.position + Vector3.up, transform.position + Vector3.up + Vector3.down * 3.0f, Color.green, 1.0f);
                     m_coolDownFakePathfind = 1.0f;
                 }
-                m_coolDownFakePathfind -= Time.deltaTime;
-                m_flipDirPathfindTick -= Time.deltaTime;
+                m_coolDownFakePathfind -= SceneScript.deltaTime();
+                m_flipDirPathfindTick -= SceneScript.deltaTime();
                 if (m_flipDirPathfindTick < 0.0f)
                 {
                     m_flipDirPathfindTick = Random.Range(100.0f,300.0f);
@@ -129,12 +129,12 @@ public class EnemyController : MonoBehaviour
             {
                 //m_isJumping = true;
                 m_onGround = false;
-                rigidbody.AddForce(0.0f, m_jumpPower, 0.0f);
+                rigidbody.AddForce(0.0f, m_jumpPower * SceneScript.s_customTimeScale, 0.0f);
                // if (!m_jumpSound.isPlaying) m_jumpSound.Play();
             }
 
             // Movement
-            velocity = new Vector3(m_movedir * Time.deltaTime, m_movedirY*Time.deltaTime, 0.0f);
+            velocity = new Vector3(m_movedir * SceneScript.deltaTime(), m_movedirY * SceneScript.deltaTime(), 0.0f);
 
 
 
@@ -147,7 +147,7 @@ public class EnemyController : MonoBehaviour
             // Apply movement
             Vector3 relativeVelocity = velocity - oldVelocity;
             if (m_enemyType == Type.WALKING) relativeVelocity.y = 0.0f;
-            rigidbody.AddForce(relativeVelocity, ForceMode.VelocityChange);
+            rigidbody.AddForce(relativeVelocity * SceneScript.s_customTimeScale, ForceMode.VelocityChange);
         }
     }
 
@@ -196,7 +196,7 @@ public class EnemyController : MonoBehaviour
                 m_animObj.renderer.material.SetColor("_TintColor", new Color(Random.Range(1.0f, -1.0f), Random.Range(1.0f, -1.0f), Random.Range(1.0f, -1.0f)));
                 if (m_buffer.isWritingToBuffer())
                 {
-                    transform.localScale += 3.0f*Time.deltaTime*new Vector3(Random.Range(-1.0f, 2.0f), Random.Range(-2.0f, 2.0f), 0.0f);
+                    transform.localScale += 3.0f * SceneScript.deltaTime() * new Vector3(Random.Range(-1.0f, 2.0f), Random.Range(-2.0f, 2.0f), 0.0f);
                 }
             }
             else
@@ -299,7 +299,7 @@ public class EnemyController : MonoBehaviour
         {
             if (Mathf.Abs(m_movedir) > 0.0f) // moving
             {
-                m_frameCalc += Time.deltaTime * m_animSpd;
+                m_frameCalc += SceneScript.deltaTime() * m_animSpd;
                 m_frameData.m_frameData = new Vector2((float)((int)m_frameCalc % 4), 0.0f);
             }
         }

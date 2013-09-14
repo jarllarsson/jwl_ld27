@@ -76,7 +76,7 @@ public class Artifact : MonoBehaviour
             m_model.renderer.material.color = m_modelDefaultColor*m_health*0.01f;
             if (m_hitTick > 0.0f)
             {
-                m_hitTick -= Time.deltaTime;
+                m_hitTick -= SceneScript.deltaTime();
                 m_modelContainer.localPosition += new Vector3(Mathf.Sin(m_hitTick*50.0f)*0.7f,0.0f,0.0f);
                 m_model.renderer.material.color = new Color(0.5f+Random.Range(0.0f, 1.0f), 0.5f+Random.Range(0.0f, 1.0f), 0.5f+Random.Range(0.0f, 1.0f));
             }
@@ -99,7 +99,7 @@ public class Artifact : MonoBehaviour
         {
             if (transform.localScale.x > 0.0f)
             {
-                transform.localScale -= Vector3.one*Time.deltaTime*0.3f;
+                transform.localScale -= Vector3.one * SceneScript.deltaTime() * 0.3f;
             }
             else
             {

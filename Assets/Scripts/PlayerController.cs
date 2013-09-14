@@ -70,13 +70,13 @@ public class PlayerController : MonoBehaviour
                 m_laserMpCount = 0.0f;
             }
             float mp = Mathf.Clamp(1.0f - prcnt, 0.3f, 1.0f) + m_laserMpCount;
-            m_laserTimeoutTick -= Time.deltaTime * mp;
+            m_laserTimeoutTick -= SceneScript.deltaTime() * mp;
         }
 
         if (isFireKeyPressed())
         {
             // laser Cooldown decrease as you fire(while no rewind cooldown)
-            m_laserMpCount += Time.deltaTime * m_laserMpCountIncSpd;
+            m_laserMpCount += SceneScript.deltaTime() * m_laserMpCountIncSpd;
             if (m_laserMpCount > m_maxLaserMpCount)
                 m_laserMpCount = m_maxLaserMpCount;
         }
@@ -101,7 +101,8 @@ public class PlayerController : MonoBehaviour
 	// Update is called once per frame
 	void FixedUpdate () 
     {
-        if (GlobalTime.getState()==GlobalTime.State.ADVANCING
+        if (SceneScript.s_customTimeScale>0.0f &&
+            GlobalTime.getState() == GlobalTime.State.ADVANCING
             && !m_hit.isHit() &&
             !m_buffer.isBeforeBuffer() && m_buffer.isWritingToBuffer() &&
             !GameOverScript.m_gameEnd)
@@ -141,7 +142,7 @@ public class PlayerController : MonoBehaviour
             }
 
             // Movement
-            velocity = new Vector3(m_movedir * Time.deltaTime, 0.0f, 0.0f);
+            velocity = new Vector3(m_movedir * SceneScript.deltaTime(), 0.0f, 0.0f);
 
 
 
@@ -178,10 +179,10 @@ public class PlayerController : MonoBehaviour
                 //laserObj.localScale = new Vector3(laserObj.localScale.x, laserObj.localScale.y * scale, laserObj.localScale.z);
                 m_shootAnimTick = m_shootAnimLen;
             }
-            velocity += m_laserThrowback * Time.deltaTime;
+            velocity += m_laserThrowback * SceneScript.deltaTime();
             m_laserThrowback *= 0.89f;
             if (m_shootAnimTick > 0.0f)
-                m_shootAnimTick -= Time.deltaTime;
+                m_shootAnimTick -= SceneScript.deltaTime();
             else
                 m_shootAnimTick = 0.0f;
 
@@ -200,12 +201,12 @@ public class PlayerController : MonoBehaviour
             {
                 if (Mathf.Abs(m_movedir) > m_moveSpeed) // moving
                 {
-                    m_frameCalc += Time.deltaTime * m_animRunSpd;
+                    m_frameCalc += SceneScript.deltaTime() * m_animRunSpd;
                     m_frameData.m_frameData = new Vector2((float)((int)m_frameCalc%4), 2.0f);
                 }
                 else // idle
                 {
-                    m_frameCalc += Time.deltaTime * m_animIdleSpd;
+                    m_frameCalc += SceneScript.deltaTime() * m_animIdleSpd;
                     m_frameData.m_frameData = new Vector2((float)((int)m_frameCalc % 4), 3.0f);
                 }
             }

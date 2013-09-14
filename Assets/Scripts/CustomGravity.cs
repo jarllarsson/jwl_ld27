@@ -19,8 +19,8 @@ public class CustomGravity : MonoBehaviour
     {
         if (GlobalTime.getState()==GlobalTime.State.ADVANCING &&
             !m_buffer || (m_buffer && !m_buffer.isBeforeBuffer() && m_buffer.isWritingToBuffer()))
-        {        
-            rigidbody.AddForce(Vector3.down*m_gravity);
+        {
+            rigidbody.AddForce(Vector3.down * m_gravity * SceneScript.s_customTimeScale);
         }
 	}
 }

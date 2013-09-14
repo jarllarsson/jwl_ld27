@@ -50,8 +50,8 @@ public class HitScript : MonoBehaviour
 
         if (GlobalTime.getState() == GlobalTime.State.ADVANCING)
         {
-            m_hitAnimTime -= Time.deltaTime;
-            m_hitCooldownTime -= Time.deltaTime;
+            m_hitAnimTime -= SceneScript.deltaTime();
+            m_hitCooldownTime -= SceneScript.deltaTime();
         }
         if (isCooldown())
         {
@@ -115,7 +115,7 @@ public class HitScript : MonoBehaviour
                     m_hitDir = transform.position - p_hitter.transform.position;
                     m_hitDir.y += 0.3f;
                     m_hitDir.z = 0.0f; m_hitDir.Normalize();
-                    rigidbody.AddForce(m_hitDir * m_hitPushForce);
+                    rigidbody.AddForce(m_hitDir * m_hitPushForce * SceneScript.s_customTimeScale);
                     m_hitAnimTime = m_hitAnimTimeLim;
                     m_hitCooldownTime = m_hitCooldownTimeLim;
                 }
