@@ -28,12 +28,15 @@ public class CameraBehaviour : MonoBehaviour
 
     void smoothFollow()
     {
-        Transform target = StaticPlayerHandle.m_player;
-        Vector3 goal = new Vector3(target.position.x, target.position.y,
-                                   transform.position.z);
-        float multiplier = GlobalTime.getCurrentSpeedup();
-	    transform.position = Vector3.SmoothDamp(transform.position,
-                                                goal,ref m_currentVel,
-                                                m_followTime / multiplier, m_followMaxSpeed * multiplier);
+        if (SceneScript.s_customTimeScale>0.0f && !GameOverScript.m_gameEnd)
+        {
+            Transform target = StaticPlayerHandle.m_player;
+            Vector3 goal = new Vector3(target.position.x, target.position.y,
+                                       transform.position.z);
+            float multiplier = GlobalTime.getCurrentSpeedup();
+            transform.position = Vector3.SmoothDamp(transform.position,
+                                                    goal, ref m_currentVel,
+                                                    m_followTime / multiplier, m_followMaxSpeed * multiplier);
+        }
     }
 }

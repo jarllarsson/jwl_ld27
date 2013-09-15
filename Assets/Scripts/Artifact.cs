@@ -27,7 +27,7 @@ public class Artifact : MonoBehaviour
     {
         m_modelContainerDefaultPos = m_modelContainer.localPosition;
         m_modelDefaultColor = m_model.renderer.material.color;
-        m_defaultYPos = transform.position.y;
+        m_defaultYPos = transform.localPosition.y;
         m_oldTime = GlobalTime.getTime();
 	}
 	
@@ -67,9 +67,9 @@ public class Artifact : MonoBehaviour
             {
                 if (m_moveParticles.isPlaying) m_moveParticles.Stop();
             }
-            transform.position += new Vector3(0.0f, -delta, 0.0f);
-            if (transform.position.y < m_defaultYPos) 
-                transform.position = new Vector3(transform.position.x, m_defaultYPos, transform.position.z);
+            transform.localPosition += new Vector3(0.0f, -delta, 0.0f);
+            if (transform.localPosition.y < m_defaultYPos) 
+                transform.localPosition = new Vector3(transform.localPosition.x, m_defaultYPos, transform.localPosition.z);
             m_oldTime = GlobalTime.getTime();
 
             m_modelContainer.localPosition = m_modelContainerDefaultPos;
@@ -134,7 +134,7 @@ public class Artifact : MonoBehaviour
             m_hitTick = m_hitCooldown;
             m_health -= p_value*100.0f;
             success = true;
-            Debug.Log("hurt by: " + p_caller.gameObject.name);
+            //Debug.Log("hurt by: " + p_caller.gameObject.name);
         }
         return success;
     }

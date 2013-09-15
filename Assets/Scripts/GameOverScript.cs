@@ -19,11 +19,17 @@ public class GameOverScript : MonoBehaviour
     public PlayerController   m_playerController;
     public PlayerTimeTraveler m_playerTimetraveler;
     private bool hasPressed = true;
+
+    public Transform m_camera;
+    private Vector3 m_camStartDiff;
+    public ButtonScript m_resetBtn;
+
     // Use this for initialization
     void Start()
     {
+        m_camStartDiff = transform.position - m_camera.position;
         m_start = false;
-
+        m_resetBtn.m_active = false;
     }
 
     // Update is called once per frame
@@ -31,7 +37,9 @@ public class GameOverScript : MonoBehaviour
     {
         if (m_start)
         {
-            bool press = Input.GetKey(KeyCode.Space);
+            transform.position = new Vector3(m_camera.position.x + m_camStartDiff.x, m_camera.position.y + m_camStartDiff.y, transform.position.z);
+            m_infoText.transform.position = new Vector3(0.5f, 0.5f, 0.0f);
+            bool press = m_resetBtn.readPress();
             m_gameEnd = true;
             if (m_playerController != null) m_playerController.enabled = false;
             if (m_playerTimetraveler != null) m_playerTimetraveler.enabled = false;
@@ -72,6 +80,7 @@ public class GameOverScript : MonoBehaviour
         m_upperText.enabled = false;
         m_lowerText.enabled = false;
         m_infoText.enabled = true;
+        m_resetBtn.m_active = true;
         m_infoText.text = m_text;
     }
 }

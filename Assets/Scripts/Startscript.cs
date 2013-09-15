@@ -8,11 +8,17 @@ public class Startscript : MonoBehaviour
     private float m_step=0.0f;
     public Transform m_fadePlane;
     public GUIText m_infoText;
-    public GUIText m_diffText;
+    //public GUIText m_diffText;
     public GUIText m_upperText;
     public GUIText m_lowerText;
     public Renderer m_playerIcon;
     private bool hasPressed = true;
+
+    public ButtonScript m_startEasy;
+    public ButtonScript m_startNormal;
+    public ButtonScript m_startHard;
+    public ButtonScript m_startXtreme;
+
 	// Use this for initialization
 	void Start () 
     {
@@ -23,18 +29,18 @@ public class Startscript : MonoBehaviour
         m_upperText.enabled = false;
         m_lowerText.enabled = false;
         m_infoText.enabled = true;
-        m_diffText.enabled = true;
-        m_infoText.text = "Protect the cube.\nRewind to elevate it to its goal.\nSelect a difficulty using the number keys.\n\n[Press SPACE to start]";
+        //m_diffText.enabled = true;
+        m_infoText.text = "Protect the cube.\nRewind to elevate it to its goal.";
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
         bool press = Input.GetKey(KeyCode.Space);
-        #if UNITY_ANDROID || UNITY_IPHONE
-            press = true;
-            hasPressed = false;
-        #endif
+//         #if UNITY_ANDROID || UNITY_IPHONE
+//             press = true;
+//             hasPressed = false;
+//         #endif
 
         m_playerIcon.enabled = false;
         if (!m_start && press && !hasPressed)
@@ -44,23 +50,23 @@ public class Startscript : MonoBehaviour
 
         // difficulty
         int inDiffc = m_difficulty;
-        if (Input.GetKey(KeyCode.Alpha1) || Input.GetKey(KeyCode.Keypad1)) inDiffc = 1;
-        if (Input.GetKey(KeyCode.Alpha2) || Input.GetKey(KeyCode.Keypad2)) inDiffc = 2;
-        if (Input.GetKey(KeyCode.Alpha3) || Input.GetKey(KeyCode.Keypad3)) inDiffc = 3;
-        if (Input.GetKey(KeyCode.Alpha4) || Input.GetKey(KeyCode.Keypad4)) inDiffc = 4;
+        if (m_startEasy.readPress())    {inDiffc = 1;m_start=true;}
+        if (m_startNormal.readPress())  {inDiffc = 2;m_start=true;}
+        if (m_startHard.readPress())    {inDiffc = 3;m_start=true;}
+        if (m_startXtreme.readPress())  {inDiffc = 4;m_start=true;}
         m_difficulty = inDiffc;
 
-        string ds = "";
-        for (int i = 1; i <= 4; i++)
-        {
-            string prt = " ";
-            if (inDiffc == i) prt += "<color=#ff5fc1>[";
-            prt += i.ToString();
-            if (inDiffc == i) prt += "]</color>";
-            prt += " ";
-            ds += prt;
-        }
-        m_diffText.text = ds;
+//         string ds = "";
+//         for (int i = 1; i <= 4; i++)
+//         {
+//             string prt = " ";
+//             if (inDiffc == i) prt += "<color=#ff5fc1>[";
+//             prt += i.ToString();
+//             if (inDiffc == i) prt += "]</color>";
+//             prt += " ";
+//             ds += prt;
+//         }
+//         m_diffText.text = ds;
 
         if (m_start)
         {
@@ -75,7 +81,7 @@ public class Startscript : MonoBehaviour
                 m_upperText.enabled = true;
                 m_lowerText.enabled = true;
                 m_infoText.enabled = false;
-                m_diffText.enabled = false;
+                //m_diffText.enabled = false;
                 m_start = false;
             }
         }
